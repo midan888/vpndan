@@ -3,11 +3,12 @@ import Foundation
 actor APIClient {
     static let shared = APIClient()
 
-    #if DEBUG
-    private let baseURL = "http://localhost:8080/api/v1"
-    #else
-    private let baseURL = "https://api.vpngod.app/api/v1"
-    #endif
+    private let baseURL: String = {
+        guard let url = Bundle.main.object(forInfoDictionaryKey: "API_BASE_URL") as? String, !url.isEmpty else {
+            fatalError("API_BASE_URL not set in Info.plist")
+        }
+        return url
+    }()
 
     private let session = URLSession.shared
     private let decoder: JSONDecoder = {

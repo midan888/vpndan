@@ -64,7 +64,8 @@
 		4D789473EFFCF6DCB6FA4CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		66F9BE4C8AF1C7633D4682F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		6E0E4DE364E7C9F5ADC87092 /* PacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		7C58ACEDDC5243D65D54DF35 /* VPNGod.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VPNGod.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		70C63579F5DDB880E5E816E4 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		7C58ACEDDC5243D65D54DF35 /* VPNGod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VPNGod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80FFF58CE74B8E730685B059 /* PacketTunnel.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PacketTunnel.xcconfig; sourceTree = "<group>"; };
 		90304B537A149B7B2766769F /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		974BF143F87615280A366A95 /* VPNGodApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNGodApp.swift; sourceTree = "<group>"; };
@@ -73,6 +74,7 @@
 		A355366D8D0B466ED437561C /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		ADD733ACFAE13B90743AAA37 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNManager.swift; sourceTree = "<group>"; };
+		C155DE43C5EB3256781248FC /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		C960B2BCCF82E8CF37176B01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D04C43D26D6A7E4C7CAF6029 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		DCA040B594CB2708E3FF4529 /* PacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PacketTunnel.entitlements; sourceTree = "<group>"; };
@@ -165,6 +167,15 @@
 			path = PacketTunnel;
 			sourceTree = "<group>";
 		};
+		BFAEB6DDC26D491B688AA9A3 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				70C63579F5DDB880E5E816E4 /* Debug.xcconfig */,
+				C155DE43C5EB3256781248FC /* Release.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		D08718DE87D86D2A23AD5759 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +188,7 @@
 		F42DE37B1D41C4A89DE01D7E = {
 			isa = PBXGroup;
 			children = (
+				BFAEB6DDC26D491B688AA9A3 /* Config */,
 				485B57733F976D7F18041559 /* Packages */,
 				A09033B715249E786675EE6A /* PacketTunnel */,
 				141BEC82EA664EDC0F92A86C /* VPNGod */,
@@ -468,11 +480,13 @@
 		};
 		E38E5750A9D921F5D35135D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70C63579F5DDB880E5E816E4 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VPNGod/App/VPNGod.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = VPNGod/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -487,11 +501,13 @@
 		};
 		FBA4D757F7A802EAABF28038 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C155DE43C5EB3256781248FC /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VPNGod/App/VPNGod.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = VPNGod/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

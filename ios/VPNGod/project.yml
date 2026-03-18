@@ -19,6 +19,9 @@ targets:
     platform: iOS
     sources:
       - VPNGod
+    configFiles:
+      Debug: Config/Debug.xcconfig
+      Release: Config/Release.xcconfig
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.vpngod.VPNGod
