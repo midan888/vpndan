@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -10,10 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"vpn-god/backend/internal/api"
 	"vpn-god/backend/internal/auth"
 	"vpn-god/backend/internal/config"
+	"vpn-god/backend/internal/models"
 	"vpn-god/backend/internal/store"
 )
 
@@ -23,16 +24,19 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	db, err := sql.Open("postgres", cfg.DatabaseURL)
+	db, err := gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("failed to open database: %v", err)
+		log.Fatalf("failed to connect to database: %v", err)
 	}
-	defer db.Close()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := db.PingContext(ctx); err != nil {
-		log.Fatalf("failed to ping database: %v", err)
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatalf("failed to get underlying sql.DB: %v", err)
+	}
+	defer sqlDB.Close()
+
+	if err := db.AutoMigrate(&models.User{}, &models.Server{}); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
 	}
 
 	userStore := store.NewPostgresUserStore(db)

@@ -7,10 +7,10 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email"`
-	Password  string    `json:"-"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	Email     string    `json:"email" gorm:"type:varchar(255);uniqueIndex"`
+	Password  string    `json:"-" gorm:"type:text;not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type RegisterRequest struct {
