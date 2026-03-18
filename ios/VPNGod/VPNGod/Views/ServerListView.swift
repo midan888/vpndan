@@ -16,7 +16,14 @@ struct ServerListView: View {
                         description: Text("No servers available at the moment.")
                     )
                 } else {
-                    serverList
+                    VStack(spacing: 0) {
+                        if let refreshError = viewModel.refreshError {
+                            RefreshErrorBanner(message: refreshError) {
+                                viewModel.dismissRefreshError()
+                            }
+                        }
+                        serverList
+                    }
                 }
             }
             .navigationTitle("Servers")
@@ -49,6 +56,36 @@ struct ServerListView: View {
             .disabled(!server.isActive)
         }
         .listStyle(.insetGrouped)
+    }
+}
+
+// MARK: - Refresh Error Banner
+
+struct RefreshErrorBanner: View {
+    let message: String
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+
+            Text(message)
+                .font(.caption)
+
+            Spacer()
+
+            Button {
+                onDismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.caption2)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .background(.orange.opacity(0.1))
     }
 }
 

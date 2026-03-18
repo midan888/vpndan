@@ -19,6 +19,7 @@
 		59B2DD633D62934DB52067AB /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90304B537A149B7B2766769F /* ConnectionView.swift */; };
 		5A754C2DD5189EB01B659EB2 /* WireGuardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43981D610D4A40B1B7FA37A3 /* WireGuardConfig.swift */; };
 		5D1D821197A2439D0ACCDC3D /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F5CF36D3C21B0C91FC2383 /* AuthService.swift */; };
+		77A80C21330207FBE935FFA0 /* WireGuardKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6B2645556CC991CDD2AA9DAD /* WireGuardKit */; };
 		BA7ABF62F5C3EB9E5997E175 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E913E13A559187D389210A /* PacketTunnelProvider.swift */; };
 		CA252858BA14AFC5094054EE /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36365DD09DDCB5D8B95DA08E /* APIClient.swift */; };
 		CB0BF9B04C8E6F19C0B6DD64 /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361B8B3A2BE1B5C2713B5537 /* RegisterViewModel.swift */; };
@@ -74,8 +75,20 @@
 		C960B2BCCF82E8CF37176B01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D04C43D26D6A7E4C7CAF6029 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		DCA040B594CB2708E3FF4529 /* PacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PacketTunnel.entitlements; sourceTree = "<group>"; };
+		E9029145B671B3029C3A214D /* wireguard-apple */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "wireguard-apple"; path = "../wireguard-apple"; sourceTree = SOURCE_ROOT; };
 		FDB48CA65D3BCA11E2CE111B /* VPNGod.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VPNGod.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7A7287304226E9CC450C3819 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				77A80C21330207FBE935FFA0 /* WireGuardKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		141BEC82EA664EDC0F92A86C /* VPNGod */ = {
@@ -99,6 +112,14 @@
 				43981D610D4A40B1B7FA37A3 /* WireGuardConfig.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		485B57733F976D7F18041559 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E9029145B671B3029C3A214D /* wireguard-apple */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		66E7E86F45B16B48BDD3FE07 /* Services */ = {
@@ -154,6 +175,7 @@
 		F42DE37B1D41C4A89DE01D7E = {
 			isa = PBXGroup;
 			children = (
+				485B57733F976D7F18041559 /* Packages */,
 				A09033B715249E786675EE6A /* PacketTunnel */,
 				141BEC82EA664EDC0F92A86C /* VPNGod */,
 				D08718DE87D86D2A23AD5759 /* Products */,
@@ -179,6 +201,7 @@
 			buildConfigurationList = 686E26AAF6BB3B8A1C72D838 /* Build configuration list for PBXNativeTarget "PacketTunnel" */;
 			buildPhases = (
 				AE8E91EEC1F649A1897B9F78 /* Sources */,
+				7A7287304226E9CC450C3819 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -186,6 +209,7 @@
 			);
 			name = PacketTunnel;
 			packageProductDependencies = (
+				6B2645556CC991CDD2AA9DAD /* WireGuardKit */,
 			);
 			productName = PacketTunnel;
 			productReference = 6E0E4DE364E7C9F5ADC87092 /* PacketTunnel.appex */;
@@ -230,6 +254,9 @@
 			);
 			mainGroup = F42DE37B1D41C4A89DE01D7E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D0BBBA984BA3D72B434B619B /* XCLocalSwiftPackageReference "../wireguard-apple" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D08718DE87D86D2A23AD5759 /* Products */;
 			projectDirPath = "";
@@ -350,6 +377,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../wireguard-apple/Sources/WireGuardKitGo/out",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vpngod.VPNGod.PacketTunnel;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -365,6 +396,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../wireguard-apple/Sources/WireGuardKitGo/out",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vpngod.VPNGod.PacketTunnel;
 				SDKROOT = iphoneos;
@@ -504,6 +539,20 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		D0BBBA984BA3D72B434B619B /* XCLocalSwiftPackageReference "../wireguard-apple" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../wireguard-apple";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6B2645556CC991CDD2AA9DAD /* WireGuardKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WireGuardKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5FE953C0D29D826862F90BBF /* Project object */;
 }

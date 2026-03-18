@@ -76,6 +76,11 @@
   },
   {
     "isFramework" : false,
+    "moduleName" : "WireGuardKit",
+    "modulePath" : "\/Users\/mikayeldanielyan\/Projects\/vpn-god\/ios\/VPNGod\/build\/Debug-iphoneos\/WireGuardKit.swiftmodule\/arm64-apple-ios.swiftmodule"
+  },
+  {
+    "isFramework" : false,
     "moduleName" : "XPC",
     "modulePath" : "\/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/swift\/iphoneos\/prebuilt-modules\/26.2\/XPC.swiftmodule\/arm64e-apple-ios.swiftmodule"
   },
@@ -204,6 +209,20 @@
     "isBridgingHeaderDependency" : false,
     "isFramework" : false,
     "moduleName" : "SwiftShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Users\/mikayeldanielyan\/Projects\/vpn-god\/ios\/wireguard-apple\/Sources\/WireGuardKitC\/module.modulemap",
+    "clangModulePath" : "\/Users\/mikayeldanielyan\/Projects\/vpn-god\/ios\/VPNGod\/build\/SwiftExplicitPrecompiledModules\/WireGuardKitC-DRANLO6LMWBEZFRAAK1S1SGZM.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "WireGuardKitC"
+  },
+  {
+    "clangModuleMapPath" : "\/Users\/mikayeldanielyan\/Projects\/vpn-god\/ios\/wireguard-apple\/Sources\/WireGuardKitGo\/module.modulemap",
+    "clangModulePath" : "\/Users\/mikayeldanielyan\/Projects\/vpn-god\/ios\/VPNGod\/build\/SwiftExplicitPrecompiledModules\/WireGuardKitGo-BQ6POTXT6KEJ96GT9KN8MJDW8.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "WireGuardKitGo"
   },
   {
     "clangModuleMapPath" : "\/Applications\/Xcode.app\/Contents\/Developer\/Platforms\/iPhoneOS.platform\/Developer\/SDKs\/iPhoneOS.sdk\/usr\/include\/xpc.modulemap",

@@ -33,13 +33,19 @@ final class VPNManager {
 
         do {
             // Get WireGuard config from backend
-            let config = try await APIClient.shared.connect(serverID: server.id)
+            let config: WireGuardConfig
+            do {
+                config = try await APIClient.shared.connect(serverID: server.id)
+            } catch let error as APIError {
+                throw mapConnectError(error)
+            }
 
             // Save config to App Group for the tunnel extension
             saveConfigToAppGroup(config)
 
             // Configure and start the tunnel
             let manager = try await loadOrCreateTunnelManager()
+
             let proto = NETunnelProviderProtocol()
             proto.providerBundleIdentifier = "com.vpngod.VPNGod.PacketTunnel"
             proto.serverAddress = server.host
@@ -48,9 +54,22 @@ final class VPNManager {
             manager.localizedDescription = "VPN God"
             manager.isEnabled = true
 
-            try await manager.saveToPreferences()
+            do {
+                try await manager.saveToPreferences()
+            } catch {
+                // saveToPreferences fails if user taps "Don't Allow" on the VPN permission prompt
+                throw APIError.vpnPermissionRequired
+            }
+
             try await manager.loadFromPreferences()
-            try manager.connection.startVPNTunnel()
+
+            do {
+                try manager.connection.startVPNTunnel()
+            } catch NEVPNError.configurationDisabled {
+                throw APIError.vpnPermissionRequired
+            } catch {
+                throw APIError.vpnConnectionFailed
+            }
 
             tunnelManager = manager
         } catch {
@@ -68,7 +87,8 @@ final class VPNManager {
         do {
             _ = try await APIClient.shared.disconnect()
         } catch {
-            // Log but don't block UI — tunnel is already stopped locally
+            // Tunnel is already stopped locally — don't block the UI.
+            // Backend peer will be cleaned up on next connect or by TTL.
         }
 
         connectedServer = nil
@@ -112,6 +132,22 @@ final class VPNManager {
         guard let defaults = UserDefaults(suiteName: Self.appGroupID) else { return }
         let data = try? JSONEncoder().encode(config)
         defaults.set(data, forKey: "wg_config")
+    }
+
+    private func mapConnectError(_ error: APIError) -> APIError {
+        switch error {
+        case .badRequest(let msg) where msg.lowercased().contains("not available"):
+            return .serverUnavailable
+        case .notFound:
+            return .serverUnavailable
+        case .conflict:
+            return error // "already connected, disconnect first"
+        default:
+            if case .serverError = error {
+                return .serverAtCapacity
+            }
+            return error
+        }
     }
 
     private func observeVPNStatus() {

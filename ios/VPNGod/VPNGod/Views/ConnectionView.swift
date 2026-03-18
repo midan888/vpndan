@@ -5,6 +5,7 @@ struct ConnectionView: View {
     @Environment(VPNManager.self) private var vpn
     @State private var error: String?
     @State private var showError = false
+    @State private var showSwitchConfirmation = false
 
     private var isConnectedToThis: Bool {
         vpn.connectedServer?.id == server.id && vpn.status == .connected
@@ -16,6 +17,11 @@ struct ConnectionView: View {
 
     private var isBusy: Bool {
         vpn.status == .connecting || vpn.status == .disconnecting
+    }
+
+    /// Connected to a *different* server
+    private var isConnectedToOther: Bool {
+        vpn.status == .connected && vpn.connectedServer?.id != server.id
     }
 
     var body: some View {
@@ -40,11 +46,21 @@ struct ConnectionView: View {
                 Text(statusText)
                     .font(.headline)
                     .foregroundStyle(.secondary)
+
+                if isConnectedToThis, let ip = vpn.connectedServer?.host {
+                    Text(ip)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
             }
 
             // Connect / Disconnect button
             Button {
-                Task { await toggleConnection() }
+                if isConnectedToOther {
+                    showSwitchConfirmation = true
+                } else {
+                    Task { await toggleConnection() }
+                }
             } label: {
                 Group {
                     if isBusy {
@@ -77,6 +93,14 @@ struct ConnectionView: View {
         } message: {
             Text(error ?? "")
         }
+        .confirmationDialog("Switch Server", isPresented: $showSwitchConfirmation) {
+            Button("Switch") {
+                Task { await switchServer() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("You are connected to \(vpn.connectedServer?.name ?? "another server"). Disconnect and connect to \(server.name)?")
+        }
     }
 
     private var statusText: String {
@@ -97,12 +121,21 @@ struct ConnectionView: View {
             if isConnectedToThis {
                 try await vpn.disconnect()
             } else {
-                // If connected to another server, disconnect first
-                if vpn.status == .connected {
-                    try await vpn.disconnect()
-                }
                 try await vpn.connect(server: server)
             }
+        } catch let apiError as APIError {
+            error = apiError.errorDescription
+            showError = true
+        } catch {
+            self.error = "Connection failed. Please try again."
+            showError = true
+        }
+    }
+
+    private func switchServer() async {
+        do {
+            try await vpn.disconnect()
+            try await vpn.connect(server: server)
         } catch let apiError as APIError {
             error = apiError.errorDescription
             showError = true

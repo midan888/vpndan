@@ -9,6 +9,10 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
 
+packages:
+  WireGuardKit:
+    path: ../wireguard-apple
+
 targets:
   VPNGod:
     type: application
@@ -55,6 +59,9 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.vpngod.VPNGod.PacketTunnel
         INFOPLIST_FILE: PacketTunnel/Info.plist
         CODE_SIGN_ENTITLEMENTS: PacketTunnel/PacketTunnel.entitlements
+        LIBRARY_SEARCH_PATHS:
+          - "$(inherited)"
+          - "$(SRCROOT)/../wireguard-apple/Sources/WireGuardKitGo/out"
     entitlements:
       path: PacketTunnel/PacketTunnel.entitlements
       properties:
@@ -72,3 +79,6 @@ targets:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
+    dependencies:
+      - package: WireGuardKit
+        product: WireGuardKit

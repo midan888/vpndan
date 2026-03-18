@@ -1,4 +1,0 @@
-Target dependency graph (2 targets)
-Target 'VPNGod' in project 'VPNGod'
-➜ Explicit dependency on target 'PacketTunnel' in project 'VPNGod'
-Target 'PacketTunnel' in project 'VPNGod' (no dependencies)
