@@ -3,10 +3,11 @@ package api
 import (
 	"net/http"
 
-	"github.com/danielgtaylor/huma/v2"
-	"github.com/danielgtaylor/huma/v2/adapters/humago"
 	"vpn-god/backend/internal/auth"
 	"vpn-god/backend/internal/store"
+
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
 func NewRouter(users store.UserStore, servers store.ServerStore, jwtService *auth.JWTService) http.Handler {
@@ -51,6 +52,15 @@ func NewRouter(users store.UserStore, servers store.ServerStore, jwtService *aut
 		Tags:        []string{"Servers"},
 		Security:    []map[string][]string{{"bearer": {}}},
 	}, serverHandler.ListServers)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/api/v1/servers/{id}",
+		OperationID: "get-server",
+		Summary:     "Get Server By ID",
+		Tags:        []string{"Servers"},
+		Security:    []map[string][]string{{"bearer": {}}},
+	}, serverHandler.GetServer)
 
 	return mux
 }
