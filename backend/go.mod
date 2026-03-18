@@ -9,4 +9,5 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.11.2
 	golang.org/x/crypto v0.49.0
+	golang.zx2c4.com/wireguard/wgctrl v0.0.0-20241231184526-a9ab2273dd10
 )

@@ -10,7 +10,7 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
-func NewRouter(users store.UserStore, servers store.ServerStore, jwtService *auth.JWTService) http.Handler {
+func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, jwtService *auth.JWTService) http.Handler {
 	mux := http.NewServeMux()
 
 	humaAPI := humago.New(mux, huma.DefaultConfig("VPN God API", "1.0.0"))
@@ -61,6 +61,27 @@ func NewRouter(users store.UserStore, servers store.ServerStore, jwtService *aut
 		Tags:        []string{"Servers"},
 		Security:    []map[string][]string{{"bearer": {}}},
 	}, serverHandler.GetServer)
+
+	connectHandler := NewConnectHandler(peers, servers, jwtService)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:        http.MethodPost,
+		Path:          "/api/v1/connect",
+		OperationID:   "connect",
+		Summary:       "Connect to a VPN server",
+		Tags:          []string{"Connection"},
+		Security:      []map[string][]string{{"bearer": {}}},
+		DefaultStatus: http.StatusCreated,
+	}, connectHandler.Connect)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:      http.MethodDelete,
+		Path:        "/api/v1/connect",
+		OperationID: "disconnect",
+		Summary:     "Disconnect from VPN server",
+		Tags:        []string{"Connection"},
+		Security:    []map[string][]string{{"bearer": {}}},
+	}, connectHandler.Disconnect)
 
 	return mux
 }

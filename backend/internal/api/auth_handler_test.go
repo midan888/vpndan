@@ -64,10 +64,25 @@ func (m *mockServerStore) GetServerByID(_ context.Context, _ uuid.UUID) (*models
 	return nil, store.ErrServerNotFound
 }
 
+type mockPeerStore struct{}
+
+func (m *mockPeerStore) CreatePeer(_ context.Context, _, _ uuid.UUID, _, _, _ string) (*models.Peer, error) {
+	return nil, nil
+}
+func (m *mockPeerStore) GetPeerByUserID(_ context.Context, _ uuid.UUID) (*models.Peer, error) {
+	return nil, store.ErrPeerNotFound
+}
+func (m *mockPeerStore) DeletePeerByUserID(_ context.Context, _ uuid.UUID) error {
+	return store.ErrPeerNotFound
+}
+func (m *mockPeerStore) CountPeersByServerID(_ context.Context, _ uuid.UUID) (int, error) {
+	return 0, nil
+}
+
 func setupRouter() (http.Handler, *mockUserStore) {
 	ms := newMockUserStore()
 	jwtSvc := auth.NewJWTService("test-secret")
-	router := NewRouter(ms, &mockServerStore{}, jwtSvc)
+	router := NewRouter(ms, &mockServerStore{}, &mockPeerStore{}, jwtSvc)
 	return router, ms
 }
 

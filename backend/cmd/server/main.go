@@ -35,9 +35,10 @@ func main() {
 
 	userStore := store.NewPostgresUserStore(db)
 	serverStore := store.NewPostgresServerStore(db)
+	peerStore := store.NewPostgresPeerStore(db)
 	jwtService := auth.NewJWTService(cfg.JWTSecret)
 
-	router := api.NewRouter(userStore, serverStore, jwtService)
+	router := api.NewRouter(userStore, serverStore, peerStore, jwtService)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -87,6 +88,18 @@ func runMigrations(db *sqlx.DB) error {
 			is_active  BOOLEAN NOT NULL DEFAULT true,
 			created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 		)`,
+		`CREATE TABLE IF NOT EXISTS peers (
+			id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+			user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			server_id   UUID NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
+			private_key TEXT NOT NULL,
+			public_key  TEXT NOT NULL,
+			assigned_ip INET NOT NULL,
+			created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+			UNIQUE(user_id)
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_peers_user_id ON peers(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_peers_server_id ON peers(server_id)`,
 	}
 
 	for _, m := range migrations {

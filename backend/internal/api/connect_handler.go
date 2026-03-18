@@ -1,0 +1,135 @@
+package api
+
+import (
+	"context"
+	"errors"
+	"fmt"
+
+	"vpn-god/backend/internal/auth"
+	"vpn-god/backend/internal/models"
+	"vpn-god/backend/internal/store"
+	"vpn-god/backend/internal/wireguard"
+
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/google/uuid"
+)
+
+type ConnectHandler struct {
+	peers   store.PeerStore
+	servers store.ServerStore
+	jwt     *auth.JWTService
+}
+
+func NewConnectHandler(peers store.PeerStore, servers store.ServerStore, jwt *auth.JWTService) *ConnectHandler {
+	return &ConnectHandler{peers: peers, servers: servers, jwt: jwt}
+}
+
+// POST /api/v1/connect
+
+type ConnectInput struct {
+	Authorization string    `header:"Authorization" required:"true" doc:"Bearer access token"`
+	Body          struct {
+		ServerID uuid.UUID `json:"server_id" required:"true" doc:"ID of the server to connect to"`
+	}
+}
+
+type ConnectOutput struct {
+	Body models.WireGuardConfig
+}
+
+func (h *ConnectHandler) Connect(ctx context.Context, input *ConnectInput) (*ConnectOutput, error) {
+	userID, err := authenticateRequest(h.jwt, input.Authorization)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if user already has an active connection
+	existingPeer, err := h.peers.GetPeerByUserID(ctx, userID)
+	if err != nil && !errors.Is(err, store.ErrPeerNotFound) {
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+	if existingPeer != nil {
+		return nil, huma.Error409Conflict("already connected, disconnect first")
+	}
+
+	// Validate server exists and is active
+	server, err := h.servers.GetServerByID(ctx, input.Body.ServerID)
+	if err != nil {
+		if errors.Is(err, store.ErrServerNotFound) {
+			return nil, huma.Error404NotFound("server not found")
+		}
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+	if !server.IsActive {
+		return nil, huma.Error400BadRequest("server is not available")
+	}
+
+	// Generate WireGuard keypair for the client
+	keyPair, err := wireguard.GenerateKeyPair()
+	if err != nil {
+		return nil, huma.Error500InternalServerError("failed to generate keys")
+	}
+
+	// Assign an IP from the server's subnet (10.0.0.0/24)
+	// Reserve .1 for the server, assign .2+ to clients
+	peerCount, err := h.peers.CountPeersByServerID(ctx, server.ID)
+	if err != nil {
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+	clientIP := fmt.Sprintf("10.0.0.%d", peerCount+2)
+	if peerCount+2 > 254 {
+		return nil, huma.Error503ServiceUnavailable("server is full")
+	}
+
+	// Store peer in database
+	peer, err := h.peers.CreatePeer(ctx, userID, server.ID, keyPair.PrivateKey, keyPair.PublicKey, clientIP)
+	if err != nil {
+		if errors.Is(err, store.ErrPeerExists) {
+			return nil, huma.Error409Conflict("already connected, disconnect first")
+		}
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+
+	// Build WireGuard config for the client
+	config := models.WireGuardConfig{
+		InterfacePrivateKey: peer.PrivateKey,
+		InterfaceAddress:    fmt.Sprintf("%s/32", peer.AssignedIP),
+		InterfaceDNS:        "1.1.1.1",
+		PeerPublicKey:       server.PublicKey,
+		PeerEndpoint:        fmt.Sprintf("%s:%d", server.Host, server.Port),
+		PeerAllowedIPs:      "0.0.0.0/0",
+	}
+
+	return &ConnectOutput{Body: config}, nil
+}
+
+// DELETE /api/v1/connect
+
+type DisconnectInput struct {
+	Authorization string `header:"Authorization" required:"true" doc:"Bearer access token"`
+}
+
+type DisconnectOutput struct {
+	Body struct {
+		Message string `json:"message" doc:"Disconnection confirmation"`
+	}
+}
+
+func (h *ConnectHandler) Disconnect(ctx context.Context, input *DisconnectInput) (*DisconnectOutput, error) {
+	userID, err := authenticateRequest(h.jwt, input.Authorization)
+	if err != nil {
+		return nil, err
+	}
+
+	err = h.peers.DeletePeerByUserID(ctx, userID)
+	if err != nil {
+		if errors.Is(err, store.ErrPeerNotFound) {
+			return nil, huma.Error404NotFound("no active connection")
+		}
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+
+	out := &DisconnectOutput{}
+	out.Body.Message = "disconnected"
+	return out, nil
+}
