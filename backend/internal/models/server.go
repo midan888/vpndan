@@ -7,14 +7,14 @@ import (
 )
 
 type Server struct {
-	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-	Name      string    `json:"name" gorm:"type:varchar(100);not null"`
-	Country   string    `json:"country" gorm:"type:varchar(2);not null"`
-	Host      string    `json:"host" gorm:"type:varchar(255);not null"`
-	Port      int       `json:"-" gorm:"type:int;not null;default:51820"`
-	PublicKey string    `json:"-" gorm:"type:text;not null"`
-	IsActive  bool      `json:"is_active" gorm:"not null;default:true"`
-	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	ID        uuid.UUID `json:"id" db:"id"`
+	Name      string    `json:"name" db:"name"`
+	Country   string    `json:"country" db:"country"`
+	Host      string    `json:"host" db:"host"`
+	Port      int       `json:"-" db:"port"`
+	PublicKey string    `json:"-" db:"public_key"`
+	IsActive  bool      `json:"is_active" db:"is_active"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
 type ServerResponse struct {

@@ -2,20 +2,21 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 	"vpn-god/backend/internal/models"
 )
 
 type PostgresUserStore struct {
-	db *gorm.DB
+	db *sqlx.DB
 }
 
-func NewPostgresUserStore(db *gorm.DB) *PostgresUserStore {
+func NewPostgresUserStore(db *sqlx.DB) *PostgresUserStore {
 	return &PostgresUserStore{db: db}
 }
 
@@ -27,7 +28,11 @@ func (s *PostgresUserStore) CreateUser(ctx context.Context, email, hashedPasswor
 		CreatedAt: time.Now(),
 	}
 
-	if err := s.db.WithContext(ctx).Create(user).Error; err != nil {
+	_, err := s.db.ExecContext(ctx,
+		`INSERT INTO users (id, email, password, created_at) VALUES ($1, $2, $3, $4)`,
+		user.ID, user.Email, user.Password, user.CreatedAt,
+	)
+	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "23505") {
 			return nil, ErrEmailExists
 		}
@@ -39,8 +44,9 @@ func (s *PostgresUserStore) CreateUser(ctx context.Context, email, hashedPasswor
 
 func (s *PostgresUserStore) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
-	if err := s.db.WithContext(ctx).Where("email = ?", email).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	err := s.db.GetContext(ctx, &user, `SELECT id, email, password, created_at FROM users WHERE email = $1`, email)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrUserNotFound
 		}
 		return nil, err
@@ -50,8 +56,9 @@ func (s *PostgresUserStore) GetUserByEmail(ctx context.Context, email string) (*
 
 func (s *PostgresUserStore) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	var user models.User
-	if err := s.db.WithContext(ctx).First(&user, "id = ?", id).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	err := s.db.GetContext(ctx, &user, `SELECT id, email, password, created_at FROM users WHERE id = $1`, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrUserNotFound
 		}
 		return nil, err

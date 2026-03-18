@@ -2,24 +2,28 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 	"vpn-god/backend/internal/models"
 )
 
 type PostgresServerStore struct {
-	db *gorm.DB
+	db *sqlx.DB
 }
 
-func NewPostgresServerStore(db *gorm.DB) *PostgresServerStore {
+func NewPostgresServerStore(db *sqlx.DB) *PostgresServerStore {
 	return &PostgresServerStore{db: db}
 }
 
 func (s *PostgresServerStore) ListActiveServers(ctx context.Context) ([]models.Server, error) {
 	var servers []models.Server
-	if err := s.db.WithContext(ctx).Where("is_active = ?", true).Order("country, name").Find(&servers).Error; err != nil {
+	err := s.db.SelectContext(ctx, &servers,
+		`SELECT id, name, country, host, port, public_key, is_active, created_at FROM servers WHERE is_active = true ORDER BY country, name`,
+	)
+	if err != nil {
 		return nil, err
 	}
 	return servers, nil
@@ -27,8 +31,11 @@ func (s *PostgresServerStore) ListActiveServers(ctx context.Context) ([]models.S
 
 func (s *PostgresServerStore) GetServerByID(ctx context.Context, id uuid.UUID) (*models.Server, error) {
 	var srv models.Server
-	if err := s.db.WithContext(ctx).First(&srv, "id = ?", id).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	err := s.db.GetContext(ctx, &srv,
+		`SELECT id, name, country, host, port, public_key, is_active, created_at FROM servers WHERE id = $1`, id,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrServerNotFound
 		}
 		return nil, err
