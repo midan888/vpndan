@@ -43,7 +43,7 @@ func setupServerRouter() (http.Handler, *fullMockServerStore, *auth.JWTService) 
 	ms := newMockUserStore()
 	ss := newFullMockServerStore()
 	jwtSvc := auth.NewJWTService("test-secret")
-	router := NewRouter(ms, ss, &mockPeerStore{}, jwtSvc)
+	router := NewRouter(ms, ss, &mockPeerStore{}, jwtSvc, &mockPeerManager{})
 	return router, ss, jwtSvc
 }
 

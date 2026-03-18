@@ -15,6 +15,7 @@ import (
 	"vpn-god/backend/internal/auth"
 	"vpn-god/backend/internal/config"
 	"vpn-god/backend/internal/store"
+	"vpn-god/backend/internal/wireguard"
 )
 
 func main() {
@@ -37,8 +38,9 @@ func main() {
 	serverStore := store.NewPostgresServerStore(db)
 	peerStore := store.NewPostgresPeerStore(db)
 	jwtService := auth.NewJWTService(cfg.JWTSecret)
+	wgManager := wireguard.NewLocalPeerManager("wg0")
 
-	router := api.NewRouter(userStore, serverStore, peerStore, jwtService)
+	router := api.NewRouter(userStore, serverStore, peerStore, jwtService, wgManager)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,

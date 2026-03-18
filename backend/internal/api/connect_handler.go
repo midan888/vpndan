@@ -18,10 +18,11 @@ type ConnectHandler struct {
 	peers   store.PeerStore
 	servers store.ServerStore
 	jwt     *auth.JWTService
+	wg      wireguard.PeerManager
 }
 
-func NewConnectHandler(peers store.PeerStore, servers store.ServerStore, jwt *auth.JWTService) *ConnectHandler {
-	return &ConnectHandler{peers: peers, servers: servers, jwt: jwt}
+func NewConnectHandler(peers store.PeerStore, servers store.ServerStore, jwt *auth.JWTService, wg wireguard.PeerManager) *ConnectHandler {
+	return &ConnectHandler{peers: peers, servers: servers, jwt: jwt, wg: wg}
 }
 
 // POST /api/v1/connect
@@ -90,6 +91,13 @@ func (h *ConnectHandler) Connect(ctx context.Context, input *ConnectInput) (*Con
 		return nil, huma.Error500InternalServerError("internal server error")
 	}
 
+	// Register peer on the WireGuard interface
+	if err := h.wg.AddPeer(keyPair.PublicKey, clientIP); err != nil {
+		// Rollback: remove the peer from DB since WireGuard rejected it
+		_ = h.peers.DeletePeerByUserID(ctx, userID)
+		return nil, huma.Error500InternalServerError("failed to configure VPN tunnel")
+	}
+
 	// Build WireGuard config for the client
 	config := models.WireGuardConfig{
 		InterfacePrivateKey: peer.PrivateKey,
@@ -121,11 +129,22 @@ func (h *ConnectHandler) Disconnect(ctx context.Context, input *DisconnectInput)
 		return nil, err
 	}
 
-	err = h.peers.DeletePeerByUserID(ctx, userID)
+	// Get the peer so we know its public key for WireGuard removal
+	peer, err := h.peers.GetPeerByUserID(ctx, userID)
 	if err != nil {
 		if errors.Is(err, store.ErrPeerNotFound) {
 			return nil, huma.Error404NotFound("no active connection")
 		}
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+
+	// Remove peer from WireGuard interface
+	if err := h.wg.RemovePeer(peer.PublicKey); err != nil {
+		return nil, huma.Error500InternalServerError("failed to remove VPN tunnel")
+	}
+
+	// Delete peer from database
+	if err := h.peers.DeletePeerByUserID(ctx, userID); err != nil {
 		return nil, huma.Error500InternalServerError("internal server error")
 	}
 

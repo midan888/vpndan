@@ -5,12 +5,13 @@ import (
 
 	"vpn-god/backend/internal/auth"
 	"vpn-god/backend/internal/store"
+	"vpn-god/backend/internal/wireguard"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
-func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, jwtService *auth.JWTService) http.Handler {
+func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, jwtService *auth.JWTService, wg wireguard.PeerManager) http.Handler {
 	mux := http.NewServeMux()
 
 	humaAPI := humago.New(mux, huma.DefaultConfig("VPN God API", "1.0.0"))
@@ -62,7 +63,7 @@ func NewRouter(users store.UserStore, servers store.ServerStore, peers store.Pee
 		Security:    []map[string][]string{{"bearer": {}}},
 	}, serverHandler.GetServer)
 
-	connectHandler := NewConnectHandler(peers, servers, jwtService)
+	connectHandler := NewConnectHandler(peers, servers, jwtService, wg)
 
 	huma.Register(humaAPI, huma.Operation{
 		Method:        http.MethodPost,
