@@ -65,7 +65,13 @@ struct HomeView: View {
             handleStatusChange(from: oldStatus, to: newStatus)
         }
         .sheet(isPresented: $showServerSheet) {
-            serverSelectionSheet
+            ServerSelectionSheet(
+                servers: viewModel.servers,
+                selectedServerID: selectedServer?.id,
+                connectedServerID: vpn.connectedServer?.id,
+                onSelect: { server in selectServer(server) },
+                onDismiss: { showServerSheet = false }
+            )
         }
         .alert("Connection Error", isPresented: $showError) {
             Button("OK") {}
@@ -103,73 +109,6 @@ struct HomeView: View {
             .ignoresSafeArea()
             .animation(.easeInOut(duration: 0.8), value: vpn.status)
         }
-    }
-
-    // MARK: - Server Selection Sheet
-
-    private var serverSelectionSheet: some View {
-        NavigationStack {
-            Group {
-                if viewModel.servers.isEmpty && viewModel.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    List {
-                        ForEach(viewModel.servers) { server in
-                            Button {
-                                selectServer(server)
-                            } label: {
-                                serverRow(server)
-                            }
-                            .disabled(!server.isActive)
-                            .listRowBackground(Color.vpnSurface)
-                        }
-                    }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                }
-            }
-            .background(Color.vpnBackground)
-            .navigationTitle("Select Server")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { showServerSheet = false }
-                        .foregroundStyle(Color.vpnPrimary)
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
-        .presentationBackground(Color.vpnBackground)
-    }
-
-    private func serverRow(_ server: Server) -> some View {
-        HStack(spacing: VPNSpacing.md) {
-            Text(flag(for: server.country))
-                .font(.title2)
-
-            VStack(alignment: .leading, spacing: VPNSpacing.xs) {
-                Text(server.name)
-                    .vpnTextStyle(.body, color: server.isActive ? .vpnTextPrimary : .vpnTextTertiary)
-            }
-
-            Spacer()
-
-            if vpn.connectedServer?.id == server.id && vpn.status == .connected {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.vpnConnected)
-            } else if selectedServer?.id == server.id {
-                Image(systemName: "checkmark.circle")
-                    .foregroundStyle(Color.vpnPrimary)
-            }
-
-            Circle()
-                .fill(server.isActive ? Color.vpnConnected : Color.vpnInactive)
-                .frame(width: 8, height: 8)
-        }
-        .padding(.vertical, VPNSpacing.xs)
-        .opacity(server.isActive ? 1 : 0.5)
     }
 
     // MARK: - Computed Properties

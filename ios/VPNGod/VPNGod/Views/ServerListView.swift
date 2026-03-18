@@ -51,7 +51,7 @@ struct ServerListView: View {
     private var serverList: some View {
         List(viewModel.servers) { server in
             NavigationLink(destination: ConnectionView(server: server)) {
-                ServerRow(server: server, isConnected: vpn.connectedServer?.id == server.id)
+                ServerRow(server: server, isConnected: vpn.connectedServer?.id == server.id && vpn.status == .connected)
             }
             .disabled(!server.isActive)
         }
@@ -89,45 +89,3 @@ struct RefreshErrorBanner: View {
     }
 }
 
-// MARK: - Server Row
-
-struct ServerRow: View {
-    let server: Server
-    let isConnected: Bool
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Text(flag(for: server.country))
-                .font(.title)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(server.name)
-                    .font(.body)
-                    .foregroundStyle(server.isActive ? .primary : .secondary)
-
-                if isConnected {
-                    Text("Connected")
-                        .font(.caption)
-                        .foregroundStyle(.green)
-                }
-            }
-
-            Spacer()
-
-            Circle()
-                .fill(server.isActive ? .green : .gray)
-                .frame(width: 8, height: 8)
-        }
-        .opacity(server.isActive ? 1 : 0.5)
-    }
-
-    private func flag(for countryCode: String) -> String {
-        let base: UInt32 = 127397
-        return countryCode
-            .uppercased()
-            .unicodeScalars
-            .compactMap { UnicodeScalar(base + $0.value) }
-            .map { String($0) }
-            .joined()
-    }
-}

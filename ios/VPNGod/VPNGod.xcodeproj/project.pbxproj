@@ -40,6 +40,10 @@
 		BB0002010000000300000001 /* QuickStatsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002020000000300000001 /* QuickStatsRow.swift */; };
 		BB0002010000000400000001 /* IPAddressCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002020000000400000001 /* IPAddressCard.swift */; };
 		BB0002010000000500000001 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002020000000500000001 /* HomeView.swift */; };
+		CC0003010000000100000001 /* ServerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0003020000000100000001 /* ServerRow.swift */; };
+		CC0003010000000200000001 /* FavoritesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0003020000000200000001 /* FavoritesService.swift */; };
+		CC0003010000000300000001 /* ServerSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0003020000000300000001 /* ServerSelectionSheet.swift */; };
+		CC0003010000000400000001 /* ServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0003020000000400000001 /* ServersView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +112,10 @@
 		BB0002020000000300000001 /* QuickStatsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStatsRow.swift; sourceTree = "<group>"; };
 		BB0002020000000400000001 /* IPAddressCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAddressCard.swift; sourceTree = "<group>"; };
 		BB0002020000000500000001 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		CC0003020000000100000001 /* ServerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerRow.swift; sourceTree = "<group>"; };
+		CC0003020000000200000001 /* FavoritesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesService.swift; sourceTree = "<group>"; };
+		CC0003020000000300000001 /* ServerSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectionSheet.swift; sourceTree = "<group>"; };
+		CC0003020000000400000001 /* ServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +167,7 @@
 				BB0002020000000200000001 /* ServerCard.swift */,
 				BB0002020000000300000001 /* QuickStatsRow.swift */,
 				BB0002020000000400000001 /* IPAddressCard.swift */,
+				CC0003020000000100000001 /* ServerRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -189,6 +198,7 @@
 				36F5CF36D3C21B0C91FC2383 /* AuthService.swift */,
 				A355366D8D0B466ED437561C /* KeychainService.swift */,
 				B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */,
+				CC0003020000000200000001 /* FavoritesService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -259,10 +269,20 @@
 				66F9BE4C8AF1C7633D4682F4 /* AuthView.swift */,
 				90304B537A149B7B2766769F /* ConnectionView.swift */,
 				BB0002030000000100000001 /* Home */,
+				CC0003030000000100000001 /* Servers */,
 				0083E159B330B8B508FE039B /* ServerListView.swift */,
 				C960B2BCCF82E8CF37176B01 /* SettingsView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		CC0003030000000100000001 /* Servers */ = {
+			isa = PBXGroup;
+			children = (
+				CC0003020000000300000001 /* ServerSelectionSheet.swift */,
+				CC0003020000000400000001 /* ServersView.swift */,
+			);
+			path = Servers;
 			sourceTree = "<group>";
 		};
 		BB0002030000000100000001 /* Home */ = {
@@ -381,6 +401,10 @@
 				BB0002010000000300000001 /* QuickStatsRow.swift in Sources */,
 				BB0002010000000400000001 /* IPAddressCard.swift in Sources */,
 				BB0002010000000500000001 /* HomeView.swift in Sources */,
+				CC0003010000000100000001 /* ServerRow.swift in Sources */,
+				CC0003010000000200000001 /* FavoritesService.swift in Sources */,
+				CC0003010000000300000001 /* ServerSelectionSheet.swift in Sources */,
+				CC0003010000000400000001 /* ServersView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
