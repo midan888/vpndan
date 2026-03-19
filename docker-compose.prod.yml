@@ -42,6 +42,16 @@ services:
     volumes:
       - /dev/net/tun:/dev/net/tun
 
+  pgweb:
+    image: sosedoff/pgweb:latest
+    restart: unless-stopped
+    environment:
+      PGWEB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@127.0.0.1:5432/vpngod?sslmode=disable
+    network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   pgdata:
   caddy_data:

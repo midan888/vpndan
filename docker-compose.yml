@@ -10,5 +10,15 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  pgweb:
+    image: sosedoff/pgweb:latest
+    restart: unless-stopped
+    environment:
+      PGWEB_DATABASE_URL: postgres://postgres:postgres@postgres:5432/vpngod?sslmode=disable
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
 volumes:
   pgdata:
