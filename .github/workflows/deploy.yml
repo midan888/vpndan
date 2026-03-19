@@ -34,14 +34,33 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to VPS
+      - uses: actions/checkout@v4
+
+      - name: Copy compose file to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 31.220.4.216
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: docker-compose.prod.yml
+          target: /root/vpngod/
+
+      - name: Deploy on VPS
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: 31.220.4.216
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            cd /opt/vpn-god
-            git pull origin main
+            set -e
+            cd /root/vpngod
+
+            # Generate secrets on first deploy
+            if [ ! -f .env ]; then
+              printf "POSTGRES_PASSWORD=%s\nJWT_SECRET=%s\n" \
+                "$(openssl rand -base64 24)" \
+                "$(openssl rand -base64 32)" > .env
+            fi
+
             docker compose -f docker-compose.prod.yml pull backend
             docker compose -f docker-compose.prod.yml up -d
