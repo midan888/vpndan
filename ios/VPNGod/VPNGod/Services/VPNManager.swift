@@ -28,6 +28,14 @@ final class VPNManager {
     // MARK: - Connection
 
     func connect(server: Server) async throws {
+        // If already connected, stop the tunnel first so API calls don't route through it
+        if tunnelManager?.connection.status == .connected ||
+           tunnelManager?.connection.status == .connecting {
+            tunnelManager?.connection.stopVPNTunnel()
+            // Give the OS a moment to tear down the tunnel route
+            try await Task.sleep(for: .milliseconds(500))
+        }
+
         status = .connecting
         connectedServer = server
 
@@ -83,6 +91,8 @@ final class VPNManager {
         status = .disconnecting
 
         tunnelManager?.connection.stopVPNTunnel()
+        // Wait for tunnel teardown so the disconnect API call goes over the physical interface
+        try? await Task.sleep(for: .milliseconds(500))
 
         do {
             _ = try await APIClient.shared.disconnect()

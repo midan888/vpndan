@@ -1,7 +1,5 @@
 api.vpndan.com {
 	reverse_proxy localhost:8080
-
-	tls /etc/caddy/certs/vpndan.com.crt /etc/caddy/certs/vpndan.com.key
 }
 
 db.vpndan.com {
@@ -9,6 +7,4 @@ db.vpndan.com {
 		midan888 $2a$14$A2AMZmSENam/kqOUk84xhOYqiBypnW2FWFSX69fRh15h1T8EyOWo2
 	}
 	reverse_proxy localhost:8081
-
-	tls /etc/caddy/certs/vpndan.com.crt /etc/caddy/certs/vpndan.com.key
 }
