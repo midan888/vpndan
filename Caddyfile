@@ -1,0 +1,5 @@
+vpndan.com {
+	reverse_proxy localhost:8080
+
+	tls /etc/caddy/certs/vpndan.com.crt /etc/caddy/certs/vpndan.com.key
+}

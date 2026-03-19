@@ -16,6 +16,16 @@ services:
       timeout: 3s
       retries: 5
 
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs:/etc/caddy/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
   backend:
     image: ghcr.io/midan888/vpn-god/backend:latest
     restart: unless-stopped
@@ -34,3 +44,5 @@ services:
 
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:
