@@ -108,7 +108,7 @@ func (h *ConnectHandler) Connect(ctx context.Context, input *ConnectInput) (*Con
 		InterfaceDNS:        "1.1.1.1",
 		PeerPublicKey:       server.PublicKey,
 		PeerEndpoint:        fmt.Sprintf("%s:%d", server.Host, server.Port),
-		PeerAllowedIPs:      "0.0.0.0/0",
+		PeerAllowedIPs:      "0.0.0.0/1, 128.0.0.0/1",
 	}
 
 	return &ConnectOutput{Body: config}, nil
