@@ -11,7 +11,8 @@ settings:
 
 packages:
   WireGuardKit:
-    path: ../wireguard-apple
+    url: https://github.com/WireGuard/wireguard-apple.git
+    exactVersion: 1.0.16-27
 
 targets:
   VPNGod:
