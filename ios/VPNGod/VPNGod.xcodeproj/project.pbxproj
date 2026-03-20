@@ -97,10 +97,10 @@
 		66F32D79A095C2D4003A6F06 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		66F9BE4C8AF1C7633D4682F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		68B7E000A64B4FF7C22FB5A0 /* IPAddressCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAddressCard.swift; sourceTree = "<group>"; };
-		6E0E4DE364E7C9F5ADC87092 /* PacketTunnel.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E0E4DE364E7C9F5ADC87092 /* PacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		70C63579F5DDB880E5E816E4 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		75E557789A36C33DF9FD6B1C /* GradientButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientButton.swift; sourceTree = "<group>"; };
-		7C58ACEDDC5243D65D54DF35 /* VPNGod.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VPNGod.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C58ACEDDC5243D65D54DF35 /* VPNGod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VPNGod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80FFF58CE74B8E730685B059 /* PacketTunnel.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PacketTunnel.xcconfig; sourceTree = "<group>"; };
 		8387EB815422158E9C026295 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
 		90304B537A149B7B2766769F /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
@@ -120,6 +120,7 @@
 		D04C43D26D6A7E4C7CAF6029 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D441630D27D59B281E26B291 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DCA040B594CB2708E3FF4529 /* PacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PacketTunnel.entitlements; sourceTree = "<group>"; };
+		E9029145B671B3029C3A214D /* wireguard-apple */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "wireguard-apple"; path = "../wireguard-apple"; sourceTree = SOURCE_ROOT; };
 		FDB48CA65D3BCA11E2CE111B /* VPNGod.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VPNGod.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -166,6 +167,14 @@
 				43981D610D4A40B1B7FA37A3 /* WireGuardConfig.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		485B57733F976D7F18041559 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E9029145B671B3029C3A214D /* wireguard-apple */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		66E7E86F45B16B48BDD3FE07 /* Services */ = {
@@ -279,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				BFAEB6DDC26D491B688AA9A3 /* Config */,
+				485B57733F976D7F18041559 /* Packages */,
 				A09033B715249E786675EE6A /* PacketTunnel */,
 				141BEC82EA664EDC0F92A86C /* VPNGod */,
 				D08718DE87D86D2A23AD5759 /* Products */,
@@ -350,8 +360,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 5995E59168903964F96DB97C /* Build configuration list for PBXProject "VPNGod" */;
 			developmentRegion = en;
@@ -363,7 +371,7 @@
 			mainGroup = F42DE37B1D41C4A89DE01D7E;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C4A812226071C2AD5C1CE370 /* XCRemoteSwiftPackageReference "wireguard-apple" */,
+				D0BBBA984BA3D72B434B619B /* XCLocalSwiftPackageReference "../wireguard-apple" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D08718DE87D86D2A23AD5759 /* Products */;
@@ -511,6 +519,7 @@
 			baseConfigurationReference = 80FFF58CE74B8E730685B059 /* PacketTunnel.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = PacketTunnel/PacketTunnel.entitlements;
+				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = PacketTunnel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -528,6 +537,7 @@
 			baseConfigurationReference = 80FFF58CE74B8E730685B059 /* PacketTunnel.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = PacketTunnel/PacketTunnel.entitlements;
+				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = PacketTunnel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -611,6 +621,7 @@
 				CODE_SIGN_ENTITLEMENTS = VPNGod/App/VPNGod.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = VPNGod/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -631,6 +642,7 @@
 				CODE_SIGN_ENTITLEMENTS = VPNGod/App/VPNGod.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = VPNGod/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -675,21 +687,16 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		C4A812226071C2AD5C1CE370 /* XCRemoteSwiftPackageReference "wireguard-apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/WireGuard/wireguard-apple.git";
-			requirement = {
-				kind = exactVersion;
-				version = "1.0.16-27";
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		D0BBBA984BA3D72B434B619B /* XCLocalSwiftPackageReference "../wireguard-apple" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../wireguard-apple";
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		6B2645556CC991CDD2AA9DAD /* WireGuardKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C4A812226071C2AD5C1CE370 /* XCRemoteSwiftPackageReference "wireguard-apple" */;
 			productName = WireGuardKit;
 		};
 /* End XCSwiftPackageProductDependency section */
