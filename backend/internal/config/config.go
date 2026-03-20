@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	DatabaseURL string
-	JWTSecret   string
-	Port        string
+	DatabaseURL       string
+	JWTSecret         string
+	Port              string
+	WireGuardAdminURL string
 }
 
 func Load() (*Config, error) {
@@ -32,9 +33,10 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
-		DatabaseURL: dbURL,
-		JWTSecret:   jwtSecret,
-		Port:        port,
+		DatabaseURL:       dbURL,
+		JWTSecret:         jwtSecret,
+		Port:              port,
+		WireGuardAdminURL: os.Getenv("WIREGUARD_ADMIN_URL"),
 	}, nil
 }
 

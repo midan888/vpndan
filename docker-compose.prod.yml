@@ -25,6 +25,26 @@ services:
       - caddy_data:/data
       - caddy_config:/config
 
+  wireguard:
+    build:
+      context: ./wireguard-gateway
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      WG_ADDRESS: 10.0.0.1/24
+      WG_LISTEN_PORT: "51820"
+      WG_ADMIN_ADDR: 127.0.0.1:9080
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /dev/net/tun:/dev/net/tun
+      - wireguard_config:/config
+    sysctls:
+      net.ipv4.ip_forward: "1"
+      net.ipv4.conf.all.src_valid_mark: "1"
+      net.ipv4.conf.all.rp_filter: "0"
+      net.ipv4.conf.default.rp_filter: "0"
+
   backend:
     image: ghcr.io/midan888/vpn-god/backend:latest
     restart: unless-stopped
@@ -33,13 +53,12 @@ services:
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@127.0.0.1:5432/vpngod?sslmode=disable
       JWT_SECRET: ${JWT_SECRET}
       PORT: "8080"
+      WIREGUARD_ADMIN_URL: http://127.0.0.1:9080
     depends_on:
       postgres:
         condition: service_healthy
-    cap_add:
-      - NET_ADMIN
-    volumes:
-      - /dev/net/tun:/dev/net/tun
+      wireguard:
+        condition: service_started
 
   pgweb:
     image: sosedoff/pgweb:latest
@@ -55,3 +74,4 @@ volumes:
   pgdata:
   caddy_data:
   caddy_config:
+  wireguard_config:

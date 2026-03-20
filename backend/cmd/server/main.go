@@ -38,7 +38,14 @@ func main() {
 	serverStore := store.NewPostgresServerStore(db)
 	peerStore := store.NewPostgresPeerStore(db)
 	jwtService := auth.NewJWTService(cfg.JWTSecret)
-	wgManager := wireguard.NewLocalPeerManager("wg0")
+	var wgManager wireguard.PeerManager
+	if cfg.WireGuardAdminURL != "" {
+		log.Printf("using WireGuard admin API at %s", cfg.WireGuardAdminURL)
+		wgManager = wireguard.NewHTTPPeerManager(cfg.WireGuardAdminURL)
+	} else {
+		log.Printf("using local WireGuard interface manager")
+		wgManager = wireguard.NewLocalPeerManager("wg0")
+	}
 
 	router := api.NewRouter(userStore, serverStore, peerStore, jwtService, wgManager)
 
