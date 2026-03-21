@@ -40,13 +40,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         os_log(.default, log: log, "endpoint = %{public}s", config.peerEndpoint)
         os_log(.default, log: log, "interface address = %{public}s", config.interfaceAddress)
         os_log(.default, log: log, "allowed IPs = %{public}s", config.peerAllowedIPs)
-        os_log(.default, log: log, "interface addresses count = %{public}d", tunnelConfig.interface.addresses.count)
-        for addr in tunnelConfig.interface.addresses {
-            os_log(.default, log: log, "parsed address = %{public}s", addr.stringRepresentation)
-        }
-        for peer in tunnelConfig.peers {
-            os_log(.default, log: log, "resolved endpoint = %{public}s", peer.endpoint?.stringRepresentation ?? "nil")
-        }
+        os_log(.default, log: log, "AWG params: Jc=%d Jmin=%d Jmax=%d S1=%d S2=%d", config.jc, config.jmin, config.jmax, config.s1, config.s2)
         return try await withCheckedThrowingContinuation { continuation in
             adapter.start(tunnelConfiguration: tunnelConfig) { adapterError in
                 if let adapterError {
@@ -101,6 +95,15 @@ private struct WGConfig: Decodable {
     let peerPublicKey: String
     let peerEndpoint: String
     let peerAllowedIPs: String
+    let jc: Int
+    let jmin: Int
+    let jmax: Int
+    let s1: Int
+    let s2: Int
+    let h1: Int64
+    let h2: Int64
+    let h3: Int64
+    let h4: Int64
 
     enum CodingKeys: String, CodingKey {
         case interfacePrivateKey = "interface_private_key"
@@ -109,6 +112,7 @@ private struct WGConfig: Decodable {
         case peerPublicKey = "peer_public_key"
         case peerEndpoint = "peer_endpoint"
         case peerAllowedIPs = "peer_allowed_ips"
+        case jc, jmin, jmax, s1, s2, h1, h2, h3, h4
     }
 
     #if !targetEnvironment(simulator)
@@ -129,10 +133,20 @@ private struct WGConfig: Decodable {
         interface.addresses = interfaceAddress
             .split(separator: ",")
             .compactMap { IPAddressRange(from: String($0).trimmingCharacters(in: .whitespaces)) }
-
         interface.dns = interfaceDNS
             .split(separator: ",")
             .compactMap { DNSServer(from: String($0).trimmingCharacters(in: .whitespaces)) }
+
+        // Amnezia WireGuard obfuscation parameters
+        interface.junkPacketCount = UInt16(jc)
+        interface.junkPacketMinSize = UInt16(jmin)
+        interface.junkPacketMaxSize = UInt16(jmax)
+        interface.initPacketJunkSize = UInt16(s1)
+        interface.responsePacketJunkSize = UInt16(s2)
+        interface.initPacketMagicHeader = String(h1)
+        interface.responsePacketMagicHeader = String(h2)
+        interface.underloadPacketMagicHeader = String(h3)
+        interface.transportPacketMagicHeader = String(h4)
 
         var peer = PeerConfiguration(publicKey: serverPublicKey)
         peer.endpoint = endpoint

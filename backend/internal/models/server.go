@@ -15,6 +15,16 @@ type Server struct {
 	PublicKey string    `json:"-" db:"public_key"`
 	IsActive  bool      `json:"is_active" db:"is_active"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	// Amnezia WireGuard obfuscation parameters
+	AWGJc   int   `json:"-" db:"awg_jc"`
+	AWGJmin int   `json:"-" db:"awg_jmin"`
+	AWGJmax int   `json:"-" db:"awg_jmax"`
+	AWGS1   int   `json:"-" db:"awg_s1"`
+	AWGS2   int   `json:"-" db:"awg_s2"`
+	AWGH1   int64 `json:"-" db:"awg_h1"`
+	AWGH2   int64 `json:"-" db:"awg_h2"`
+	AWGH3   int64 `json:"-" db:"awg_h3"`
+	AWGH4   int64 `json:"-" db:"awg_h4"`
 }
 
 type ServerResponse struct {

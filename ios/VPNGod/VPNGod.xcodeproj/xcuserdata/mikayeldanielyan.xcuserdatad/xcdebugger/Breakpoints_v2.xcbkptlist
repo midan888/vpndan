@@ -8,7 +8,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VPNGod/Services/VPNManager.swift"
@@ -20,7 +20,7 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - f9826685ec03e54b"
+                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - f9826685ec03e568"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -30,11 +30,11 @@
                   urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
+                  startingLineNumber = "47"
+                  endingLineNumber = "47">
                </Location>
                <Location
-                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - 9d79f8a9c04914d"
+                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - 9d79f8a9c04916e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -44,50 +44,8 @@
                   urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
-               </Location>
-               <Location
-                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - 2903a9a3bc160951"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(7) suspend resume partial function for VPNGod.VPNManager.connect(server: VPNGod.Server) async throws -&gt; ()"
-                  moduleName = "VPNGod"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
-               </Location>
-               <Location
-                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - 716ed52df4eb9350"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(8) suspend resume partial function for VPNGod.VPNManager.connect(server: VPNGod.Server) async throws -&gt; ()"
-                  moduleName = "VPNGod"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
-               </Location>
-               <Location
-                  uuid = "68178DD5-6227-42C2-85CA-AB76D6C7882C - 7743802da736048b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(13) suspend resume partial function for VPNGod.VPNManager.connect(server: VPNGod.Server) async throws -&gt; ()"
-                  moduleName = "VPNGod"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
+                  startingLineNumber = "47"
+                  endingLineNumber = "47">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -96,7 +54,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "972C4D3A-7DD4-487F-854E-398571F0F5BA"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VPNGod/Services/VPNManager.swift"
@@ -106,36 +64,6 @@
             endingLineNumber = "52"
             landmarkName = "connect(server:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "972C4D3A-7DD4-487F-854E-398571F0F5BA - 6d8f5d54585a1869"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(9) await resume partial function for VPNGod.VPNManager.connect(server: VPNGod.Server) async throws -&gt; ()"
-                  moduleName = "VPNGod"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "55"
-                  endingLineNumber = "55">
-               </Location>
-               <Location
-                  uuid = "972C4D3A-7DD4-487F-854E-398571F0F5BA - dfb693b77abdfea3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(12) suspend resume partial function for VPNGod.VPNManager.connect(server: VPNGod.Server) async throws -&gt; ()"
-                  moduleName = "VPNGod"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mikayeldanielyan/Projects/vpn-god/ios/VPNGod/VPNGod/Services/VPNManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "55"
-                  endingLineNumber = "55">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

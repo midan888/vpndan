@@ -35,6 +35,16 @@ services:
       WG_ADDRESS: 10.0.0.1/24
       WG_LISTEN_PORT: "51820"
       WG_ADMIN_ADDR: 0.0.0.0:9080
+      # Amnezia WireGuard obfuscation params — must match values in the database
+      AWG_JC: ${AWG_JC:-4}
+      AWG_JMIN: ${AWG_JMIN:-40}
+      AWG_JMAX: ${AWG_JMAX:-70}
+      AWG_S1: ${AWG_S1:-0}
+      AWG_S2: ${AWG_S2:-0}
+      AWG_H1: ${AWG_H1:-1928394756}
+      AWG_H2: ${AWG_H2:-3847291056}
+      AWG_H3: ${AWG_H3:-2938475610}
+      AWG_H4: ${AWG_H4:-1029384756}
     cap_add:
       - NET_ADMIN
     volumes:

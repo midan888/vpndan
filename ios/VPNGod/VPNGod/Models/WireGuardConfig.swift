@@ -7,6 +7,16 @@ struct WireGuardConfig: Decodable {
     let peerPublicKey: String
     let peerEndpoint: String
     let peerAllowedIPs: String
+    // Amnezia WireGuard obfuscation parameters
+    let jc: Int
+    let jmin: Int
+    let jmax: Int
+    let s1: Int
+    let s2: Int
+    let h1: Int64
+    let h2: Int64
+    let h3: Int64
+    let h4: Int64
 
     enum CodingKeys: String, CodingKey {
         case interfacePrivateKey = "interface_private_key"
@@ -15,6 +25,7 @@ struct WireGuardConfig: Decodable {
         case peerPublicKey = "peer_public_key"
         case peerEndpoint = "peer_endpoint"
         case peerAllowedIPs = "peer_allowed_ips"
+        case jc, jmin, jmax, s1, s2, h1, h2, h3, h4
     }
 }
 

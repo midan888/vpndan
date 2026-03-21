@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -33,6 +34,16 @@ type gatewayConfig struct {
 	ListenPort string
 	AdminAddr  string
 	UplinkIF   string
+	// Amnezia WireGuard obfuscation params
+	Jc   int
+	Jmin int
+	Jmax int
+	S1   int
+	S2   int
+	H1   int64
+	H2   int64
+	H3   int64
+	H4   int64
 }
 
 type server struct {
@@ -66,13 +77,13 @@ func main() {
 	}
 
 	if err := execWGQuick("down"); err != nil {
-		log.Printf("wg-quick down skipped: %v", err)
+		log.Printf("awg-quick down skipped: %v", err)
 	}
 	if err := execWGQuick("up"); err != nil {
 		log.Fatalf("failed to bring up wg0: %v", err)
 	}
 
-	log.Printf("wireguard gateway ready: public_key=%s uplink=%s admin=%s", publicKey, cfg.UplinkIF, cfg.AdminAddr)
+	log.Printf("amnezia wireguard gateway ready: public_key=%s uplink=%s admin=%s", publicKey, cfg.UplinkIF, cfg.AdminAddr)
 
 	s := &server{}
 	mux := http.NewServeMux()
@@ -126,6 +137,15 @@ func loadConfig() (*gatewayConfig, error) {
 		ListenPort: envOrDefault("WG_LISTEN_PORT", defaultListenPort),
 		AdminAddr:  envOrDefault("WG_ADMIN_ADDR", defaultAdminAddr),
 		UplinkIF:   uplink,
+		Jc:         envInt("AWG_JC", 4),
+		Jmin:       envInt("AWG_JMIN", 40),
+		Jmax:       envInt("AWG_JMAX", 70),
+		S1:         envInt("AWG_S1", 0),
+		S2:         envInt("AWG_S2", 0),
+		H1:         envInt64("AWG_H1", 1928394756),
+		H2:         envInt64("AWG_H2", 3847291056),
+		H3:         envInt64("AWG_H3", 2938475610),
+		H4:         envInt64("AWG_H4", 1029384756),
 	}
 	return cfg, nil
 }
@@ -143,7 +163,7 @@ func ensureKeys() (string, error) {
 		return strings.TrimSpace(string(pub)), nil
 	}
 
-	cmd := exec.Command("sh", "-c", fmt.Sprintf("umask 077 && wg genkey | tee %s | wg pubkey > %s", privateKeyPath, publicKeyPath))
+	cmd := exec.Command("sh", "-c", fmt.Sprintf("umask 077 && awg genkey | tee %s | awg pubkey > %s", privateKeyPath, publicKeyPath))
 	if out, err := cmd.CombinedOutput(); err != nil {
 		return "", fmt.Errorf("generate keys: %w: %s", err, out)
 	}
@@ -165,9 +185,26 @@ func writeWGConfig(cfg *gatewayConfig) error {
 PrivateKey = %s
 Address = %s
 ListenPort = %s
+Jc = %d
+Jmin = %d
+Jmax = %d
+S1 = %d
+S2 = %d
+H1 = %d
+H2 = %d
+H3 = %d
+H4 = %d
 PostUp = iptables -I FORWARD 1 -i wg0 -o %s -j ACCEPT; iptables -I FORWARD 1 -i %s -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -I POSTROUTING 1 -s 10.0.0.0/24 -o %s -j MASQUERADE; iptables -t mangle -I FORWARD 1 -o %s -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 PostDown = iptables -D FORWARD -i wg0 -o %s -j ACCEPT; iptables -D FORWARD -i %s -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o %s -j MASQUERADE; iptables -t mangle -D FORWARD -o %s -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-`, strings.TrimSpace(string(privateKey)), cfg.Address, cfg.ListenPort, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF)
+`,
+		strings.TrimSpace(string(privateKey)),
+		cfg.Address, cfg.ListenPort,
+		cfg.Jc, cfg.Jmin, cfg.Jmax,
+		cfg.S1, cfg.S2,
+		cfg.H1, cfg.H2, cfg.H3, cfg.H4,
+		cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF,
+		cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF, cfg.UplinkIF,
+	)
 
 	if err := os.WriteFile(wireGuardConfPath, []byte(content), 0o600); err != nil {
 		return fmt.Errorf("write wg0.conf: %w", err)
@@ -176,9 +213,9 @@ PostDown = iptables -D FORWARD -i wg0 -o %s -j ACCEPT; iptables -D FORWARD -i %s
 }
 
 func execWGQuick(action string) error {
-	cmd := exec.Command("wg-quick", action, "wg0")
+	cmd := exec.Command("awg-quick", action, "wg0")
 	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("wg-quick %s: %w: %s", action, err, out)
+		return fmt.Errorf("awg-quick %s: %w: %s", action, err, out)
 	}
 	return nil
 }
@@ -207,7 +244,7 @@ func (s *server) handlePeers(w http.ResponseWriter, r *http.Request) {
 		allowedIP += "/32"
 	}
 
-	cmd := exec.Command("wg", "set", "wg0", "peer", req.PublicKey, "allowed-ips", allowedIP)
+	cmd := exec.Command("awg", "set", "wg0", "peer", req.PublicKey, "allowed-ips", allowedIP)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		http.Error(w, fmt.Sprintf("failed to add peer: %v: %s", err, out), http.StatusInternalServerError)
 		return
@@ -232,7 +269,7 @@ func (s *server) handlePeerByKey(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	cmd := exec.Command("wg", "set", "wg0", "peer", publicKey, "remove")
+	cmd := exec.Command("awg", "set", "wg0", "peer", publicKey, "remove")
 	if out, err := cmd.CombinedOutput(); err != nil {
 		http.Error(w, fmt.Sprintf("failed to remove peer: %v: %s", err, out), http.StatusInternalServerError)
 		return
@@ -244,6 +281,24 @@ func (s *server) handlePeerByKey(w http.ResponseWriter, r *http.Request) {
 func envOrDefault(key, fallback string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
+	}
+	return fallback
+}
+
+func envInt(key string, fallback int) int {
+	if v := os.Getenv(key); v != "" {
+		if n, err := strconv.Atoi(v); err == nil {
+			return n
+		}
+	}
+	return fallback
+}
+
+func envInt64(key string, fallback int64) int64 {
+	if v := os.Getenv(key); v != "" {
+		if n, err := strconv.ParseInt(v, 10, 64); err == nil {
+			return n
+		}
 	}
 	return fallback
 }

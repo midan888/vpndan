@@ -109,6 +109,15 @@ func (h *ConnectHandler) Connect(ctx context.Context, input *ConnectInput) (*Con
 		PeerPublicKey:       server.PublicKey,
 		PeerEndpoint:        fmt.Sprintf("%s:%d", server.Host, server.Port),
 		PeerAllowedIPs:      "0.0.0.0/0",
+		Jc:                  server.AWGJc,
+		Jmin:                server.AWGJmin,
+		Jmax:                server.AWGJmax,
+		S1:                  server.AWGS1,
+		S2:                  server.AWGS2,
+		H1:                  server.AWGH1,
+		H2:                  server.AWGH2,
+		H3:                  server.AWGH3,
+		H4:                  server.AWGH4,
 	}
 
 	return &ConnectOutput{Body: config}, nil
