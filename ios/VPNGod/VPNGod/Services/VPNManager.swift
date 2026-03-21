@@ -8,6 +8,11 @@ final class VPNManager {
 
     private(set) var status: VPNStatus = .disconnected
     private(set) var connectedServer: Server?
+    private(set) var bytesReceived: UInt64 = 0
+    private(set) var bytesSent: UInt64 = 0
+    private(set) var connectedDate: Date?
+
+    private var statsTimer: Timer?
 
     private var tunnelManager: NETunnelProviderManager?
     private var statusObserver: NSObjectProtocol?
@@ -142,6 +147,50 @@ final class VPNManager {
         }
     }
 
+    // MARK: - Transfer Stats
+
+    private func startStatsPolling() {
+        stopStatsPolling()
+        statsTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                await self?.pollTransferStats()
+            }
+        }
+    }
+
+    private func stopStatsPolling() {
+        statsTimer?.invalidate()
+        statsTimer = nil
+        bytesReceived = 0
+        bytesSent = 0
+    }
+
+    private func pollTransferStats() async {
+        guard let session = tunnelManager?.connection as? NETunnelProviderSession else { return }
+        let message = "getTransferStats".data(using: .utf8)!
+        do {
+            let response: Data? = try await withCheckedThrowingContinuation { continuation in
+                do {
+                    try session.sendProviderMessage(message) { response in
+                        continuation.resume(returning: response)
+                    }
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+            guard let response,
+                  let str = String(data: response, encoding: .utf8) else { return }
+            let parts = str.split(separator: ",")
+            guard parts.count == 2,
+                  let rx = UInt64(parts[0]),
+                  let tx = UInt64(parts[1]) else { return }
+            bytesReceived = rx
+            bytesSent = tx
+        } catch {
+            // Extension may not be ready yet
+        }
+    }
+
     // MARK: - Private
 
     private func loadOrCreateTunnelManager() async throws -> NETunnelProviderManager {
@@ -187,6 +236,8 @@ final class VPNManager {
                 switch connection.status {
                 case .connected:
                     self.status = .connected
+                    self.connectedDate = self.connectedDate ?? Date()
+                    self.startStatsPolling()
                 case .connecting, .reasserting:
                     self.status = .connecting
                 case .disconnecting:
@@ -194,6 +245,8 @@ final class VPNManager {
                 case .disconnected, .invalid:
                     self.status = .disconnected
                     self.connectedServer = nil
+                    self.connectedDate = nil
+                    self.stopStatsPolling()
                 @unknown default:
                     break
                 }

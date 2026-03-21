@@ -66,6 +66,36 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     }
 
     override func handleAppMessage(_ messageData: Data) async -> Data? {
+        guard let message = String(data: messageData, encoding: .utf8) else { return nil }
+
+        if message == "getTransferStats" {
+            #if !targetEnvironment(simulator)
+            return await withCheckedContinuation { continuation in
+                adapter.getRuntimeConfiguration { config in
+                    guard let config else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    // Parse UAPI format for rx_bytes and tx_bytes
+                    var rxBytes: UInt64 = 0
+                    var txBytes: UInt64 = 0
+                    for line in config.split(separator: "\n") {
+                        let trimmed = line.trimmingCharacters(in: .whitespaces)
+                        if trimmed.hasPrefix("rx_bytes=") {
+                            rxBytes += UInt64(trimmed.dropFirst("rx_bytes=".count)) ?? 0
+                        } else if trimmed.hasPrefix("tx_bytes=") {
+                            txBytes += UInt64(trimmed.dropFirst("tx_bytes=".count)) ?? 0
+                        }
+                    }
+                    let response = "\(rxBytes),\(txBytes)"
+                    continuation.resume(returning: response.data(using: .utf8))
+                }
+            }
+            #else
+            return nil
+            #endif
+        }
+
         return nil
     }
 }

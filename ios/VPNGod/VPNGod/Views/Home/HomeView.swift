@@ -7,8 +7,6 @@ struct HomeView: View {
     @State private var selectedServer: Server?
     @State private var error: String?
     @State private var showError = false
-    @State private var connectedDate: Date?
-    @State private var uptimeTimer: Timer?
 
     var body: some View {
         ZStack {
@@ -64,7 +62,9 @@ struct HomeView: View {
                         // Quick stats
                         QuickStatsRow(
                             isConnected: vpn.status == .connected,
-                            connectedDate: connectedDate
+                            connectedDate: vpn.connectedDate,
+                            bytesReceived: vpn.bytesReceived,
+                            bytesSent: vpn.bytesSent
                         )
 
                         // IP card
@@ -213,15 +213,6 @@ struct HomeView: View {
 
     private func handleStatusChange(from oldStatus: VPNManager.VPNStatus, to newStatus: VPNManager.VPNStatus) {
         triggerHaptic(for: newStatus)
-
-        switch newStatus {
-        case .connected:
-            connectedDate = Date()
-        case .disconnected:
-            connectedDate = nil
-        default:
-            break
-        }
     }
 
     // MARK: - Haptics
