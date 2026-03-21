@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: vpngod
+    ports:
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -70,16 +72,6 @@ services:
       wireguard:
         condition: service_started
 
-  pgweb:
-    image: sosedoff/pgweb:latest
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:8081:8081"
-    environment:
-      PGWEB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpngod?sslmode=disable
-    depends_on:
-      postgres:
-        condition: service_healthy
 
 volumes:
   pgdata:

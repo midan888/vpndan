@@ -69,7 +69,7 @@ struct HomeView: View {
 
                         // IP card
                         IPAddressCard(
-                            ip: vpn.status == .connected ? vpn.connectedServer?.host : nil,
+                            ip: vpn.publicIP,
                             location: vpn.status == .connected ? serverLocationString : nil
                         )
                     }
@@ -99,7 +99,9 @@ struct HomeView: View {
             Text(error ?? "")
         }
         .task {
-            await viewModel.loadServers()
+            async let serversTask: () = viewModel.loadServers()
+            async let ipTask: () = vpn.fetchPublicIPOnLaunch()
+            _ = await (serversTask, ipTask)
             // Auto-select first server if none selected
             if selectedServer == nil, let first = viewModel.servers.first(where: { $0.isActive }) {
                 selectedServer = first

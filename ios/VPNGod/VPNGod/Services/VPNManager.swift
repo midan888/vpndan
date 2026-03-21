@@ -11,6 +11,7 @@ final class VPNManager {
     private(set) var bytesReceived: UInt64 = 0
     private(set) var bytesSent: UInt64 = 0
     private(set) var connectedDate: Date?
+    private(set) var publicIP: String?
 
     private var statsTimer: Timer?
 
@@ -191,6 +192,23 @@ final class VPNManager {
         }
     }
 
+    // MARK: - Public IP
+
+    func fetchPublicIPOnLaunch() async {
+        await fetchPublicIP()
+    }
+
+    private func fetchPublicIP() async {
+        guard let url = URL(string: "https://api.ipify.org") else { return }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let ip = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+            self.publicIP = ip
+        } catch {
+            self.publicIP = nil
+        }
+    }
+
     // MARK: - Private
 
     private func loadOrCreateTunnelManager() async throws -> NETunnelProviderManager {
@@ -238,6 +256,7 @@ final class VPNManager {
                     self.status = .connected
                     self.connectedDate = self.connectedDate ?? Date()
                     self.startStatsPolling()
+                    Task { await self.fetchPublicIP() }
                 case .connecting, .reasserting:
                     self.status = .connecting
                 case .disconnecting:
@@ -247,6 +266,7 @@ final class VPNManager {
                     self.connectedServer = nil
                     self.connectedDate = nil
                     self.stopStatsPolling()
+                    Task { await self.fetchPublicIP() }
                 @unknown default:
                     break
                 }
