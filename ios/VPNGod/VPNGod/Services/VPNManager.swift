@@ -212,5 +212,14 @@ extension WireGuardConfig: Encodable {
         try container.encode(peerPublicKey, forKey: .peerPublicKey)
         try container.encode(peerEndpoint, forKey: .peerEndpoint)
         try container.encode(peerAllowedIPs, forKey: .peerAllowedIPs)
+        try container.encode(jc, forKey: .jc)
+        try container.encode(jmin, forKey: .jmin)
+        try container.encode(jmax, forKey: .jmax)
+        try container.encode(s1, forKey: .s1)
+        try container.encode(s2, forKey: .s2)
+        try container.encode(h1, forKey: .h1)
+        try container.encode(h2, forKey: .h2)
+        try container.encode(h3, forKey: .h3)
+        try container.encode(h4, forKey: .h4)
     }
 }

@@ -526,6 +526,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../amneziawg-apple/Sources/WireGuardKitGo/out",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vpngod.VPNGod.PacketTunnel;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -543,6 +547,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../amneziawg-apple/Sources/WireGuardKitGo/out",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vpngod.VPNGod.PacketTunnel;
 				SDKROOT = iphoneos;

@@ -1,3 +1,3 @@
-[submodule "ios/wireguard-apple"]
-	path = ios/wireguard-apple
-	url = https://github.com/WireGuard/wireguard-apple.git
+[submodule "ios/amneziawg-apple"]
+	path = ios/amneziawg-apple
+	url = https://github.com/amnezia-vpn/amneziawg-apple.git
