@@ -23,7 +23,7 @@ const (
 	configDir         = "/config"
 	privateKeyPath    = configDir + "/server_private.key"
 	publicKeyPath     = configDir + "/server_public.key"
-	wireGuardConfPath = "/etc/wireguard/wg0.conf"
+	wireGuardConfPath = "/etc/amnezia/amneziawg/wg0.conf"
 	defaultAddress    = "10.0.0.1/24"
 	defaultListenPort = "51820"
 	defaultAdminAddr  = "127.0.0.1:9080"
