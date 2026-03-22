@@ -77,16 +77,7 @@ struct SettingsView: View {
                     title: "Plan",
                     value: "Free",
                     trailing: {
-                        AnyView(
-                            Text("Upgrade")
-                                .vpnTextStyle(.statusBadge, color: .vpnPrimary)
-                                .padding(.horizontal, VPNSpacing.sm + VPNSpacing.xs)
-                                .padding(.vertical, VPNSpacing.xs + 2)
-                                .background(
-                                    Capsule()
-                                        .fill(Color.vpnPrimary.opacity(0.15))
-                                )
-                        )
+                        AnyView(comingSoonBadge)
                     }
                 )
             }
@@ -98,28 +89,18 @@ struct SettingsView: View {
     private var connectionSection: some View {
         settingsSection(title: "Connection", icon: "network") {
             VStack(spacing: 0) {
-                settingsRow(
-                    icon: "lock.shield.fill",
-                    title: "Protocol",
-                    value: "WireGuard"
-                )
-
-                sectionDivider
-
-                settingsToggleRow(
+                settingsDisabledToggleRow(
                     icon: "arrow.triangle.2.circlepath",
                     title: "Auto-Connect",
-                    subtitle: "Connect on app launch",
-                    isOn: .constant(false)
+                    subtitle: "Connect on app launch"
                 )
 
                 sectionDivider
 
-                settingsToggleRow(
+                settingsDisabledToggleRow(
                     icon: "xmark.shield.fill",
                     title: "Kill Switch",
-                    subtitle: "Block traffic if VPN drops",
-                    isOn: .constant(false)
+                    subtitle: "Block traffic if VPN drops"
                 )
 
                 sectionDivider
@@ -178,15 +159,15 @@ struct SettingsView: View {
     private var supportSection: some View {
         settingsSection(title: "Support", icon: "questionmark.circle.fill") {
             VStack(spacing: 0) {
-                settingsLinkRow(icon: "book.fill", title: "Help Center")
+                settingsDisabledLinkRow(icon: "book.fill", title: "Help Center")
 
                 sectionDivider
 
-                settingsLinkRow(icon: "hand.raised.fill", title: "Privacy Policy")
+                settingsDisabledLinkRow(icon: "hand.raised.fill", title: "Privacy Policy")
 
                 sectionDivider
 
-                settingsLinkRow(icon: "doc.text.fill", title: "Terms of Service")
+                settingsDisabledLinkRow(icon: "doc.text.fill", title: "Terms of Service")
             }
         }
     }
@@ -304,6 +285,61 @@ struct SettingsView: View {
         }
         .padding(.horizontal, VPNSpacing.md)
         .padding(.vertical, VPNSpacing.sm + VPNSpacing.xs)
+    }
+
+    private var comingSoonBadge: some View {
+        Text("Coming soon")
+            .vpnTextStyle(.statusBadge, color: .vpnTextTertiary)
+            .padding(.horizontal, VPNSpacing.sm + VPNSpacing.xs)
+            .padding(.vertical, VPNSpacing.xs + 2)
+            .background(
+                Capsule()
+                    .fill(Color.vpnTextTertiary.opacity(0.15))
+            )
+    }
+
+    private func settingsDisabledToggleRow(
+        icon: String,
+        title: String,
+        subtitle: String
+    ) -> some View {
+        HStack(spacing: VPNSpacing.md) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .foregroundStyle(Color.vpnPrimary.opacity(0.4))
+                .frame(width: 20)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .vpnTextStyle(.body, color: .vpnTextSecondary)
+                Text(subtitle)
+                    .vpnTextStyle(.statusBadge, color: .vpnTextTertiary)
+            }
+
+            Spacer()
+
+            comingSoonBadge
+        }
+        .padding(.horizontal, VPNSpacing.md)
+        .padding(.vertical, VPNSpacing.sm + VPNSpacing.xs)
+    }
+
+    private func settingsDisabledLinkRow(icon: String, title: String) -> some View {
+        HStack(spacing: VPNSpacing.md) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .foregroundStyle(Color.vpnPrimary.opacity(0.4))
+                .frame(width: 20)
+
+            Text(title)
+                .vpnTextStyle(.body, color: .vpnTextSecondary)
+
+            Spacer()
+
+            comingSoonBadge
+        }
+        .padding(.horizontal, VPNSpacing.md)
+        .padding(.vertical, VPNSpacing.md)
     }
 
     private func settingsLinkRow(icon: String, title: String) -> some View {

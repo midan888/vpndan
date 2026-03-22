@@ -27,6 +27,7 @@ final class AuthService {
         do {
             let response = try await APIClient.shared.refresh(token: refreshToken)
             KeychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
+            userEmail = KeychainService.getEmail()
             isAuthenticated = true
         } catch {
             KeychainService.clearTokens()
@@ -44,6 +45,7 @@ final class AuthService {
         do {
             let response = try await APIClient.shared.register(email: email, password: password)
             KeychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
+            KeychainService.saveEmail(email)
             userEmail = email
             isAuthenticated = true
         } catch let apiError as APIError {
@@ -61,6 +63,7 @@ final class AuthService {
         do {
             let response = try await APIClient.shared.login(email: email, password: password)
             KeychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
+            KeychainService.saveEmail(email)
             userEmail = email
             isAuthenticated = true
         } catch let apiError as APIError {

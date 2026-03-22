@@ -4,6 +4,7 @@ import Security
 enum KeychainService {
     private static let accessTokenKey = "com.vpngod.accessToken"
     private static let refreshTokenKey = "com.vpngod.refreshToken"
+    private static let userEmailKey = "com.vpngod.userEmail"
 
     // MARK: - Token Management
 
@@ -23,6 +24,17 @@ enum KeychainService {
     static func clearTokens() {
         delete(key: accessTokenKey)
         delete(key: refreshTokenKey)
+        delete(key: userEmailKey)
+    }
+
+    // MARK: - Email Management
+
+    static func saveEmail(_ email: String) {
+        save(key: userEmailKey, value: email)
+    }
+
+    static func getEmail() -> String? {
+        load(key: userEmailKey)
     }
 
     // MARK: - Keychain Operations
