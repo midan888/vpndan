@@ -3,7 +3,9 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(AuthService.self) private var auth
     @Environment(VPNManager.self) private var vpn
+    @Environment(ThemeService.self) private var themeService
     @State private var showLogoutConfirmation = false
+    @State private var showThemePicker = false
 
     var body: some View {
         ZStack {
@@ -125,11 +127,25 @@ struct SettingsView: View {
 
     private var appearanceSection: some View {
         settingsSection(title: "Appearance", icon: "paintbrush.fill") {
-            settingsRow(
-                icon: "moon.fill",
-                title: "Theme",
-                value: "Dark"
-            )
+            Button {
+                showThemePicker = true
+            } label: {
+                settingsRow(
+                    icon: themeService.current.icon,
+                    title: "Theme",
+                    value: themeService.current.displayName,
+                    trailing: {
+                        AnyView(
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(Color.vpnTextTertiary)
+                        )
+                    }
+                )
+            }
+        }
+        .sheet(isPresented: $showThemePicker) {
+            ThemePickerSheet()
         }
     }
 
@@ -199,7 +215,6 @@ struct SettingsView: View {
                 .background(
                     RoundedRectangle(cornerRadius: VPNRadius.card)
                         .fill(.ultraThinMaterial)
-                        .environment(\.colorScheme, .dark)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: VPNRadius.card)
@@ -304,4 +319,5 @@ struct SettingsView: View {
     SettingsView()
         .environment(AuthService.shared)
         .environment(VPNManager.shared)
+        .environment(ThemeService.shared)
 }

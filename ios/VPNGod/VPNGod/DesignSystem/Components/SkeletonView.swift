@@ -149,7 +149,6 @@ struct SkeletonServerList: View {
         .background(
             RoundedRectangle(cornerRadius: VPNRadius.card)
                 .fill(.ultraThinMaterial)
-                .environment(\.colorScheme, .dark)
         )
         .overlay(
             RoundedRectangle(cornerRadius: VPNRadius.card)

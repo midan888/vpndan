@@ -1,41 +1,38 @@
 import SwiftUI
 
 extension Color {
+    // MARK: - Theme-aware colors
+
+    private static var theme: ColorTheme {
+        ThemeService.shared.current
+    }
+
     // MARK: - Backgrounds
-    static let vpnBackground = Color(hex: 0x0A0E1A)
-    static let vpnSurface = Color(hex: 0x141929)
-    static let vpnSurfaceLight = Color(hex: 0x1E2438)
-    static let vpnBorder = Color(hex: 0x2A3050)
+    static var vpnBackground: Color { theme.background }
+    static var vpnSurface: Color { theme.surface }
+    static var vpnSurfaceLight: Color { theme.surfaceLight }
+    static var vpnBorder: Color { theme.border }
 
     // MARK: - Accent
-    static let vpnPrimary = Color(hex: 0x7B5EFF)
-    static let vpnPrimaryLight = Color(hex: 0xA78BFA)
-    static let vpnGradientStart = Color(hex: 0x7B5EFF)
-    static let vpnGradientEnd = Color(hex: 0x00D4AA)
+    static var vpnPrimary: Color { theme.primary }
+    static var vpnPrimaryLight: Color { theme.primaryLight }
+    static var vpnGradientStart: Color { theme.gradientStart }
+    static var vpnGradientEnd: Color { theme.gradientEnd }
 
     // MARK: - Status
-    static let vpnConnected = Color(hex: 0x00D4AA)
-    static let vpnConnecting = Color(hex: 0xFFB800)
-    static let vpnDisconnected = Color(hex: 0xFF4757)
-    static let vpnInactive = Color(hex: 0x4A5068)
+    static var vpnConnected: Color { theme.connected }
+    static var vpnConnecting: Color { theme.connecting }
+    static var vpnDisconnected: Color { theme.disconnected }
+    static var vpnInactive: Color { theme.inactive }
 
     // MARK: - Text
-    static let vpnTextPrimary = Color.white
-    static let vpnTextSecondary = Color(hex: 0x8B92A8)
-    static let vpnTextTertiary = Color(hex: 0x5A6180)
+    static var vpnTextPrimary: Color { theme.textPrimary }
+    static var vpnTextSecondary: Color { theme.textSecondary }
+    static var vpnTextTertiary: Color { theme.textTertiary }
 
     // MARK: - Gradients
-    static var vpnPrimaryGradient: LinearGradient {
-        LinearGradient(
-            colors: [.vpnGradientStart, .vpnGradientEnd],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
-
-    static var vpnPrimaryGradientColors: [Color] {
-        [.vpnGradientStart, .vpnGradientEnd]
-    }
+    static var vpnPrimaryGradient: LinearGradient { theme.primaryGradient }
+    static var vpnPrimaryGradientColors: [Color] { theme.primaryGradientColors }
 
     // MARK: - Hex Init
     init(hex: UInt, opacity: Double = 1.0) {

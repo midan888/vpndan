@@ -10,7 +10,6 @@ struct GlassCard<Content: View>: View {
             .background(
                 RoundedRectangle(cornerRadius: VPNRadius.card)
                     .fill(.ultraThinMaterial)
-                    .environment(\.colorScheme, .dark)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: VPNRadius.card)
@@ -30,7 +29,6 @@ struct GlassCardModifier: ViewModifier {
             .background(
                 RoundedRectangle(cornerRadius: VPNRadius.card)
                     .fill(.ultraThinMaterial)
-                    .environment(\.colorScheme, .dark)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: VPNRadius.card)

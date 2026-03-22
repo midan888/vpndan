@@ -4,6 +4,7 @@ import SwiftUI
 struct VPNGodApp: App {
     @State private var auth = AuthService.shared
     @State private var vpn = VPNManager.shared
+    @State private var theme = ThemeService.shared
     @State private var showOnboarding = !OnboardingService.isCompleted
 
     var body: some Scene {
@@ -27,7 +28,8 @@ struct VPNGodApp: App {
             .animation(.easeInOut(duration: 0.35), value: auth.isLoading)
             .environment(auth)
             .environment(vpn)
-            .preferredColorScheme(.dark)
+            .environment(theme)
+            .preferredColorScheme(theme.current.isDark ? .dark : .light)
             .task {
                 await auth.checkSession()
                 await vpn.syncStatus()

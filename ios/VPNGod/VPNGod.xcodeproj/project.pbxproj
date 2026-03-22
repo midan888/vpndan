@@ -11,12 +11,14 @@
 		111BFA2016F0FBE8A5ECFA43 /* QuickStatsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12891530B7BC30168B0EB154 /* QuickStatsRow.swift */; };
 		114E97614EC39E200C587F88 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8387EB815422158E9C026295 /* StatusBadge.swift */; };
 		165992E609C8BC1EEE5AD4E8 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F32D79A095C2D4003A6F06 /* CustomTabBar.swift */; };
+		2A59305DE6FFF36D8968E9FE /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD279EFFFD88B8FEDE631E9D /* ColorTheme.swift */; };
 		319322FB489C9FADFEC7F66C /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD733ACFAE13B90743AAA37 /* LoginViewModel.swift */; };
 		3314C089959080D3F9DBE038 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975806E95EB96747B89D941C /* APIError.swift */; };
 		3DB1B228E29D9A72BE6D2D87 /* VPNGodApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974BF143F87615280A366A95 /* VPNGodApp.swift */; };
 		4204373DD9E4FCD03B35EE14 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355366D8D0B466ED437561C /* KeychainService.swift */; };
 		43CF867F747A8CE8C4901639 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EE50EF2F3A7DE50A5B5D /* Server.swift */; };
 		46C4F6E4AC79878D383BA3AC /* ServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46986FA72D7A2FFB95B38F3C /* ServersView.swift */; };
+		4EAE9ACDD63EEA1D1109B1BF /* ThemeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4BC9666CEE6F35C88BA955 /* ThemeService.swift */; };
 		4F084FAC9F90EA2F1B58416D /* SkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD85D35E30D407DBAF6C8C7 /* SkeletonView.swift */; };
 		519D6CDA2CA5A9C1697E990B /* VPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */; };
 		52D5808021C94A275DF1C39F /* ServerListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8B6FDF471B82FADA450E59 /* ServerListViewModel.swift */; };
@@ -33,6 +35,7 @@
 		793A833B1F97CA2D5E415DE2 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172BC76DF9B808133FC235B3 /* Spacing.swift */; };
 		8F4A5E0B6347B4EE7CE980E1 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3813D598DC18ECD1C489957B /* Typography.swift */; };
 		9D8043D46A57E56BEE8C5EDE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C0C8EF0010956B620E6130 /* Colors.swift */; };
+		9E283E4805CC2D025F389DA8 /* ThemePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD25447E99EEE7E620449A3 /* ThemePickerSheet.swift */; };
 		A71BB6C1B29082426C93B955 /* ServerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D0C6D6EFA2578BFB01FAD5 /* ServerRow.swift */; };
 		AE78A8DCBF37173CC7A3DA6B /* IPAddressCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B7E000A64B4FF7C22FB5A0 /* IPAddressCard.swift */; };
 		BA7ABF62F5C3EB9E5997E175 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E913E13A559187D389210A /* PacketTunnelProvider.swift */; };
@@ -103,6 +106,7 @@
 		7C58ACEDDC5243D65D54DF35 /* VPNGod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VPNGod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80FFF58CE74B8E730685B059 /* PacketTunnel.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PacketTunnel.xcconfig; sourceTree = "<group>"; };
 		8387EB815422158E9C026295 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
+		8D4BC9666CEE6F35C88BA955 /* ThemeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeService.swift; sourceTree = "<group>"; };
 		90304B537A149B7B2766769F /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		974BF143F87615280A366A95 /* VPNGodApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNGodApp.swift; sourceTree = "<group>"; };
 		975806E95EB96747B89D941C /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 		AA9C46A74141454825D37121 /* amneziawg-apple */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "amneziawg-apple"; path = "../amneziawg-apple"; sourceTree = SOURCE_ROOT; };
 		ADD733ACFAE13B90743AAA37 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNManager.swift; sourceTree = "<group>"; };
+		BD279EFFFD88B8FEDE631E9D /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
+		BDD25447E99EEE7E620449A3 /* ThemePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePickerSheet.swift; sourceTree = "<group>"; };
 		C155DE43C5EB3256781248FC /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		C8C0C8EF0010956B620E6130 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		C960B2BCCF82E8CF37176B01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -184,6 +190,7 @@
 				36F5CF36D3C21B0C91FC2383 /* AuthService.swift */,
 				30F930A10B68AEFA2C00F6A7 /* FavoritesService.swift */,
 				A355366D8D0B466ED437561C /* KeychainService.swift */,
+				8D4BC9666CEE6F35C88BA955 /* ThemeService.swift */,
 				B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */,
 			);
 			path = Services;
@@ -277,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				C8C0C8EF0010956B620E6130 /* Colors.swift */,
+				BD279EFFFD88B8FEDE631E9D /* ColorTheme.swift */,
 				172BC76DF9B808133FC235B3 /* Spacing.swift */,
 				3813D598DC18ECD1C489957B /* Typography.swift */,
 				B8156AA6099C0084394869AC /* Components */,
@@ -303,6 +311,7 @@
 				554A71263A85AC5BC642013E /* MainTabView.swift */,
 				0083E159B330B8B508FE039B /* ServerListView.swift */,
 				C960B2BCCF82E8CF37176B01 /* SettingsView.swift */,
+				BDD25447E99EEE7E620449A3 /* ThemePickerSheet.swift */,
 				F07EB9E714866A2BB7A4BFA5 /* Home */,
 				049E25B2D3F95B4821CC56A5 /* Onboarding */,
 				A7C189D8A186D50C6DC8E06D /* Servers */,
@@ -405,6 +414,7 @@
 				DF981B5CAF572AC12E25EAC1 /* AuthModels.swift in Sources */,
 				5D1D821197A2439D0ACCDC3D /* AuthService.swift in Sources */,
 				5417CA7F0ADF67824C5E5AFE /* AuthView.swift in Sources */,
+				2A59305DE6FFF36D8968E9FE /* ColorTheme.swift in Sources */,
 				9D8043D46A57E56BEE8C5EDE /* Colors.swift in Sources */,
 				59B2DD633D62934DB52067AB /* ConnectionView.swift in Sources */,
 				165992E609C8BC1EEE5AD4E8 /* CustomTabBar.swift in Sources */,
@@ -432,6 +442,8 @@
 				4F084FAC9F90EA2F1B58416D /* SkeletonView.swift in Sources */,
 				793A833B1F97CA2D5E415DE2 /* Spacing.swift in Sources */,
 				114E97614EC39E200C587F88 /* StatusBadge.swift in Sources */,
+				9E283E4805CC2D025F389DA8 /* ThemePickerSheet.swift in Sources */,
+				4EAE9ACDD63EEA1D1109B1BF /* ThemeService.swift in Sources */,
 				8F4A5E0B6347B4EE7CE980E1 /* Typography.swift in Sources */,
 				3DB1B228E29D9A72BE6D2D87 /* VPNGodApp.swift in Sources */,
 				519D6CDA2CA5A9C1697E990B /* VPNManager.swift in Sources */,

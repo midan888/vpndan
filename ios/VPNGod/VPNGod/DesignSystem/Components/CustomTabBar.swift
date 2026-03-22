@@ -49,7 +49,6 @@ struct CustomTabBar: View {
                 topTrailingRadius: VPNRadius.tabBar
             )
             .fill(.ultraThinMaterial)
-            .environment(\.colorScheme, .dark)
         )
         .overlay(
             UnevenRoundedRectangle(
