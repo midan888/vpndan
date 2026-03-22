@@ -24,6 +24,12 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 
         let config = try JSONDecoder().decode(WGConfig.self, from: data)
 
+        // Load pre-resolved excluded routes (resolved by main app before tunnel start)
+        let excludedRoutes = loadResolvedRoutes(from: defaults)
+        if !excludedRoutes.isEmpty {
+            os_log(.default, log: log, "split tunneling: excluding %{public}d routes", excludedRoutes.count)
+        }
+
         #if targetEnvironment(simulator)
         // Simulator: just configure network settings without WireGuard
         let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: config.peerEndpoint)
@@ -32,11 +38,21 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             subnetMasks: ["255.255.255.255"]
         )
         ipv4.includedRoutes = [NEIPv4Route.default()]
+        if !excludedRoutes.isEmpty {
+            ipv4.excludedRoutes = excludedRoutes.compactMap { cidr -> NEIPv4Route? in
+                let parts = cidr.split(separator: "/")
+                guard parts.count == 2,
+                      let prefixLength = Int(parts[1]) else { return nil }
+                let address = String(parts[0])
+                let mask = subnetMask(fromPrefixLength: prefixLength)
+                return NEIPv4Route(destinationAddress: address, subnetMask: mask)
+            }
+        }
         settings.ipv4Settings = ipv4
         settings.dnsSettings = NEDNSSettings(servers: [config.interfaceDNS])
         try await setTunnelNetworkSettings(settings)
         #else
-        let tunnelConfig = try config.toTunnelConfiguration()
+        let tunnelConfig = try config.toTunnelConfiguration(excludedRoutes: excludedRoutes)
         os_log(.default, log: log, "endpoint = %{public}s", config.peerEndpoint)
         os_log(.default, log: log, "interface address = %{public}s", config.interfaceAddress)
         os_log(.default, log: log, "allowed IPs = %{public}s", config.peerAllowedIPs)
@@ -98,6 +114,22 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 
         return nil
     }
+
+    // MARK: - Split Tunnel Helpers
+
+    /// Reads the pre-resolved CIDR routes written by the main app
+    private func loadResolvedRoutes(from defaults: UserDefaults) -> [String] {
+        guard let data = defaults.data(forKey: "split_tunnel_resolved_routes"),
+              let routes = try? JSONDecoder().decode([String].self, from: data) else {
+            return []
+        }
+        return routes
+    }
+
+    private func subnetMask(fromPrefixLength prefix: Int) -> String {
+        let mask: UInt32 = prefix == 0 ? 0 : ~UInt32(0) << (32 - prefix)
+        return "\(mask >> 24 & 0xFF).\(mask >> 16 & 0xFF).\(mask >> 8 & 0xFF).\(mask & 0xFF)"
+    }
 }
 
 // MARK: - Error
@@ -146,7 +178,7 @@ private struct WGConfig: Decodable {
     }
 
     #if !targetEnvironment(simulator)
-    func toTunnelConfiguration() throws -> TunnelConfiguration {
+    func toTunnelConfiguration(excludedRoutes: [String] = []) throws -> TunnelConfiguration {
         guard let privateKey = PrivateKey(base64Key: interfacePrivateKey) else {
             throw PacketTunnelError.invalidConfiguration("invalid client private key")
         }
@@ -183,6 +215,8 @@ private struct WGConfig: Decodable {
         peer.allowedIPs = peerAllowedIPs
             .split(separator: ",")
             .compactMap { IPAddressRange(from: String($0).trimmingCharacters(in: .whitespaces)) }
+        peer.excludeIPs = excludedRoutes
+            .compactMap { IPAddressRange(from: $0) }
 
         return TunnelConfiguration(name: "VPN God", interface: interface, peers: [peer])
     }

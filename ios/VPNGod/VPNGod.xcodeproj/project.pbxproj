@@ -14,6 +14,7 @@
 		2A59305DE6FFF36D8968E9FE /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD279EFFFD88B8FEDE631E9D /* ColorTheme.swift */; };
 		319322FB489C9FADFEC7F66C /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD733ACFAE13B90743AAA37 /* LoginViewModel.swift */; };
 		3314C089959080D3F9DBE038 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975806E95EB96747B89D941C /* APIError.swift */; };
+		3879600AB0EB5722908D4A1B /* SplitTunnelSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7BCCACA94CA7847E935AA7 /* SplitTunnelSettingsView.swift */; };
 		3DB1B228E29D9A72BE6D2D87 /* VPNGodApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974BF143F87615280A366A95 /* VPNGodApp.swift */; };
 		4204373DD9E4FCD03B35EE14 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355366D8D0B466ED437561C /* KeychainService.swift */; };
 		43CF867F747A8CE8C4901639 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EE50EF2F3A7DE50A5B5D /* Server.swift */; };
@@ -27,6 +28,7 @@
 		59B2DD633D62934DB52067AB /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90304B537A149B7B2766769F /* ConnectionView.swift */; };
 		5A754C2DD5189EB01B659EB2 /* WireGuardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43981D610D4A40B1B7FA37A3 /* WireGuardConfig.swift */; };
 		5B0A59C15DBE5DC841C24089 /* GradientButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E557789A36C33DF9FD6B1C /* GradientButton.swift */; };
+		5B4DDA51D2ED7977F811D833 /* SplitTunnelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81C756A923D626C101026A /* SplitTunnelService.swift */; };
 		5D1D821197A2439D0ACCDC3D /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F5CF36D3C21B0C91FC2383 /* AuthService.swift */; };
 		65DBE236E0C0AC34821E56CD /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BD72D6E9381B7C2E229126 /* GlassCard.swift */; };
 		6B1FFBD27546DD531D749C2C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEFC21B8616FE8E8EB455958 /* Assets.xcassets */; };
@@ -44,6 +46,7 @@
 		CB0BF9B04C8E6F19C0B6DD64 /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361B8B3A2BE1B5C2713B5537 /* RegisterViewModel.swift */; };
 		D5AF44FF3DD721A3BC9D6FEF /* PacketTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6E0E4DE364E7C9F5ADC87092 /* PacketTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D65699B5FD0F57C7CB1A4763 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1356A57495C5EF3B21195FA6 /* CustomTextField.swift */; };
+		DEF8C4BBF60295A7EFBFE673 /* SplitTunnelConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551FBB917C9F1EBC19C4D86D /* SplitTunnelConfig.swift */; };
 		DF981B5CAF572AC12E25EAC1 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E66635BF1366130E2BCAD4 /* AuthModels.swift */; };
 		E091BC15F9C0B42AC6D467BF /* FavoritesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F930A10B68AEFA2C00F6A7 /* FavoritesService.swift */; };
 		E289F31EA01F6CD2C41A430E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C960B2BCCF82E8CF37176B01 /* SettingsView.swift */; };
@@ -95,6 +98,7 @@
 		470BD1F9ACE84A929A09B0CA /* ServerSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectionSheet.swift; sourceTree = "<group>"; };
 		4C216BF2FC4E10EB47331CA6 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4D789473EFFCF6DCB6FA4CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		551FBB917C9F1EBC19C4D86D /* SplitTunnelConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelConfig.swift; sourceTree = "<group>"; };
 		554A71263A85AC5BC642013E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		62D0C6D6EFA2578BFB01FAD5 /* ServerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerRow.swift; sourceTree = "<group>"; };
 		66F32D79A095C2D4003A6F06 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
@@ -117,6 +121,7 @@
 		AA9C46A74141454825D37121 /* amneziawg-apple */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "amneziawg-apple"; path = "../amneziawg-apple"; sourceTree = SOURCE_ROOT; };
 		ADD733ACFAE13B90743AAA37 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNManager.swift; sourceTree = "<group>"; };
+		BC81C756A923D626C101026A /* SplitTunnelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelService.swift; sourceTree = "<group>"; };
 		BD279EFFFD88B8FEDE631E9D /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		BDD25447E99EEE7E620449A3 /* ThemePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePickerSheet.swift; sourceTree = "<group>"; };
 		C155DE43C5EB3256781248FC /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
@@ -127,6 +132,7 @@
 		D04C43D26D6A7E4C7CAF6029 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D441630D27D59B281E26B291 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DCA040B594CB2708E3FF4529 /* PacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PacketTunnel.entitlements; sourceTree = "<group>"; };
+		EF7BCCACA94CA7847E935AA7 /* SplitTunnelSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelSettingsView.swift; sourceTree = "<group>"; };
 		FDB48CA65D3BCA11E2CE111B /* VPNGod.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VPNGod.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -170,6 +176,7 @@
 				975806E95EB96747B89D941C /* APIError.swift */,
 				09E66635BF1366130E2BCAD4 /* AuthModels.swift */,
 				1A22EE50EF2F3A7DE50A5B5D /* Server.swift */,
+				551FBB917C9F1EBC19C4D86D /* SplitTunnelConfig.swift */,
 				43981D610D4A40B1B7FA37A3 /* WireGuardConfig.swift */,
 			);
 			path = Models;
@@ -190,6 +197,7 @@
 				36F5CF36D3C21B0C91FC2383 /* AuthService.swift */,
 				30F930A10B68AEFA2C00F6A7 /* FavoritesService.swift */,
 				A355366D8D0B466ED437561C /* KeychainService.swift */,
+				BC81C756A923D626C101026A /* SplitTunnelService.swift */,
 				8D4BC9666CEE6F35C88BA955 /* ThemeService.swift */,
 				B3AF97C0DC9C66AFFE092B50 /* VPNManager.swift */,
 			);
@@ -311,6 +319,7 @@
 				554A71263A85AC5BC642013E /* MainTabView.swift */,
 				0083E159B330B8B508FE039B /* ServerListView.swift */,
 				C960B2BCCF82E8CF37176B01 /* SettingsView.swift */,
+				EF7BCCACA94CA7847E935AA7 /* SplitTunnelSettingsView.swift */,
 				BDD25447E99EEE7E620449A3 /* ThemePickerSheet.swift */,
 				F07EB9E714866A2BB7A4BFA5 /* Home */,
 				049E25B2D3F95B4821CC56A5 /* Onboarding */,
@@ -441,6 +450,9 @@
 				E289F31EA01F6CD2C41A430E /* SettingsView.swift in Sources */,
 				4F084FAC9F90EA2F1B58416D /* SkeletonView.swift in Sources */,
 				793A833B1F97CA2D5E415DE2 /* Spacing.swift in Sources */,
+				DEF8C4BBF60295A7EFBFE673 /* SplitTunnelConfig.swift in Sources */,
+				5B4DDA51D2ED7977F811D833 /* SplitTunnelService.swift in Sources */,
+				3879600AB0EB5722908D4A1B /* SplitTunnelSettingsView.swift in Sources */,
 				114E97614EC39E200C587F88 /* StatusBadge.swift in Sources */,
 				9E283E4805CC2D025F389DA8 /* ThemePickerSheet.swift in Sources */,
 				4EAE9ACDD63EEA1D1109B1BF /* ThemeService.swift in Sources */,
@@ -639,7 +651,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VPNGod/App/VPNGod.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = VPNGod/App/Info.plist;
@@ -649,6 +662,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vpngod.VPNGod;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -660,7 +674,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VPNGod/App/VPNGod.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D4DPR2Z5GA;
 				INFOPLIST_FILE = VPNGod/App/Info.plist;
@@ -670,6 +685,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vpngod.VPNGod;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

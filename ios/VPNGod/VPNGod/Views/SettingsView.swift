@@ -4,8 +4,10 @@ struct SettingsView: View {
     @Environment(AuthService.self) private var auth
     @Environment(VPNManager.self) private var vpn
     @Environment(ThemeService.self) private var themeService
+    @Environment(SplitTunnelService.self) private var splitTunnel
     @State private var showLogoutConfirmation = false
     @State private var showThemePicker = false
+    @State private var showSplitTunnel = false
 
     var body: some View {
         ZStack {
@@ -119,7 +121,29 @@ struct SettingsView: View {
                     subtitle: "Block traffic if VPN drops",
                     isOn: .constant(false)
                 )
+
+                sectionDivider
+
+                Button {
+                    showSplitTunnel = true
+                } label: {
+                    settingsRow(
+                        icon: "arrow.triangle.branch",
+                        title: "Bypass VPN",
+                        value: splitTunnel.config.isEnabled ? "On" : "Off",
+                        trailing: {
+                            AnyView(
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(Color.vpnTextTertiary)
+                            )
+                        }
+                    )
+                }
             }
+        }
+        .sheet(isPresented: $showSplitTunnel) {
+            SplitTunnelSettingsView()
         }
     }
 
@@ -320,4 +344,5 @@ struct SettingsView: View {
         .environment(AuthService.shared)
         .environment(VPNManager.shared)
         .environment(ThemeService.shared)
+        .environment(SplitTunnelService.shared)
 }

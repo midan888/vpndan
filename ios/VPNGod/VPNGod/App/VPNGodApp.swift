@@ -5,6 +5,7 @@ struct VPNGodApp: App {
     @State private var auth = AuthService.shared
     @State private var vpn = VPNManager.shared
     @State private var theme = ThemeService.shared
+    @State private var splitTunnel = SplitTunnelService.shared
     @State private var showOnboarding = !OnboardingService.isCompleted
 
     var body: some Scene {
@@ -29,6 +30,7 @@ struct VPNGodApp: App {
             .environment(auth)
             .environment(vpn)
             .environment(theme)
+            .environment(splitTunnel)
             .preferredColorScheme(theme.current.isDark ? .dark : .light)
             .task {
                 await auth.checkSession()

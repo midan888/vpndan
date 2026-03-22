@@ -40,6 +40,9 @@ final class VPNManager {
         isManualOperation = true
         status = .connecting
 
+        // Resolve split tunnel domains while we still have working DNS
+        await SplitTunnelService.shared.resolveAndWriteRoutes()
+
         // If already connected, stop the tunnel first so API calls don't route through it
         if tunnelManager?.connection.status == .connected ||
            tunnelManager?.connection.status == .connecting {
