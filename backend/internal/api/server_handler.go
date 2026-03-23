@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/models"
-	"vpn-god/backend/internal/store"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/models"
+	"vpn-dan/backend/internal/store"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/google/uuid"

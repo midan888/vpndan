@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"vpn-god/backend/internal/models"
+	"vpn-dan/backend/internal/models"
 )
 
 var (

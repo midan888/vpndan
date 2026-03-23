@@ -1,0 +1,2 @@
+LIBRARY_SEARCH_PATHS[sdk=iphoneos*] = $(inherited) $(SRCROOT)/../wireguard-apple/Sources/WireGuardKitGo/out-device
+LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) $(SRCROOT)/../wireguard-apple/Sources/WireGuardKitGo/out-simulator

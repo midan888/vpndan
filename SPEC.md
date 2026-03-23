@@ -1,8 +1,8 @@
-# VPN God - Project Specification
+# VPN Dan - Project Specification
 
 ## Overview
 
-VPN God is a WireGuard-based VPN service consisting of a Go backend API and a native iOS Swift app. Users register, browse available VPN servers, and connect via WireGuard tunnels.
+VPN Dan is a WireGuard-based VPN service consisting of a Go backend API and a native iOS Swift app. Users register, browse available VPN servers, and connect via WireGuard tunnels.
 
 ---
 
@@ -24,10 +24,10 @@ vpn-god/
 │   ├── go.mod
 │   └── Dockerfile
 ├── ios/                  # Native Swift iOS app
-│   └── VPNGod/
-│       ├── VPNGod.xcodeproj
+│   └── VPNDan/
+│       ├── VPNDan.xcodeproj
 │       ├── App/
-│       │   ├── VPNGodApp.swift
+│       │   ├── VPNDanApp.swift
 │       │   └── Info.plist
 │       ├── Models/
 │       ├── Views/
@@ -170,8 +170,8 @@ Disconnect:
 
 The app needs a **Packet Tunnel Provider** extension target for WireGuard:
 ```
-ios/VPNGod/
-├── VPNGod/              # Main app target
+ios/VPNDan/
+├── VPNDan/              # Main app target
 └── PacketTunnel/        # Network Extension target
     └── PacketTunnelProvider.swift
 ```
@@ -432,7 +432,7 @@ Resume:
 ```
 1. User taps Connect (Journey 5, step 5)
 2. App calls NETunnelProviderManager.saveToPreferences()
-3. iOS shows system alert: "VPNGod Would Like to Add VPN Configurations"
+3. iOS shows system alert: "VPNDan Would Like to Add VPN Configurations"
 4. User taps "Allow"
 5. iOS may prompt for Face ID / passcode
 6. VPN profile is saved, tunnel starts

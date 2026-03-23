@@ -5,7 +5,7 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/google/uuid"
-	"vpn-god/backend/internal/auth"
+	"vpn-dan/backend/internal/auth"
 )
 
 func authenticateRequest(jwt *auth.JWTService, authHeader string) (uuid.UUID, error) {

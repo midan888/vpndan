@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Host bootstrap for VPN God.
+# Host bootstrap for VPN Dan.
 # Run once on a fresh Ubuntu 22.04/24.04 VPS.
 
 # ── 1. System updates ────────────────────────────────────────────────────────
@@ -37,11 +37,11 @@ echo "==> AmneziaWG module loaded: $(lsmod | grep amneziawg)"
 
 # ── 4. Host sysctl ───────────────────────────────────────────────────────────
 echo "==> Applying sysctl settings..."
-cat > /etc/sysctl.d/99-vpngod.conf <<'EOF'
+cat > /etc/sysctl.d/99-vpndan.conf <<'EOF'
 net.ipv4.ip_forward=1
 net.ipv4.conf.all.src_valid_mark=1
 EOF
-sysctl -p /etc/sysctl.d/99-vpngod.conf
+sysctl -p /etc/sysctl.d/99-vpndan.conf
 
 # ── 5. /dev/net/tun ──────────────────────────────────────────────────────────
 echo "==> Ensuring /dev/net/tun exists..."
@@ -65,16 +65,16 @@ echo "Next steps:"
 echo "  1. Copy your .env file to the server with JWT_SECRET and POSTGRES_PASSWORD set"
 echo ""
 echo "  2. Deploy the stack:"
-echo "     cd /root/vpngod && docker compose -f docker-compose.prod.yml up -d"
+echo "     cd /root/vpndan && docker compose -f docker-compose.prod.yml up -d"
 echo ""
 echo "  3. Read the AmneziaWG gateway public key:"
 echo "     docker compose -f docker-compose.prod.yml exec wireguard cat /config/server_public.key"
 echo ""
 echo "  4. Seed the server row in Postgres:"
-echo "     docker compose -f docker-compose.prod.yml exec postgres psql -U postgres vpngod -c \\"
+echo "     docker compose -f docker-compose.prod.yml exec postgres psql -U postgres vpndan -c \\"
 echo "       \"INSERT INTO servers (name, country, host, port, public_key) VALUES ('VPN Server', 'US', 'YOUR_VPS_IP', 51820, 'SERVER_PUBLIC_KEY') ON CONFLICT DO NOTHING;\""
 echo ""
 echo "  5. If the row already exists, update AWG params to match your .env:"
-echo "     docker compose -f docker-compose.prod.yml exec postgres psql -U postgres vpngod -c \\"
+echo "     docker compose -f docker-compose.prod.yml exec postgres psql -U postgres vpndan -c \\"
 echo "       \"UPDATE servers SET public_key='SERVER_PUBLIC_KEY' WHERE host='YOUR_VPS_IP';\""
 echo "============================================"

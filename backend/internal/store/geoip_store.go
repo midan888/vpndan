@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
-	"vpn-god/backend/internal/models"
+	"vpn-dan/backend/internal/models"
 )
 
 type GeoIPStore interface {

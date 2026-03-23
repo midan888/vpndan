@@ -1,4 +1,0 @@
-module WireGuardKit {
-header "WireGuardKit-Swift.h"
-export *
-}

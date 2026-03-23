@@ -1,4 +1,4 @@
-# CLAUDE.md — VPN God
+# CLAUDE.md — VPN Dan
 
 ## Project Overview
 
@@ -26,8 +26,8 @@ docker compose -f docker-compose.prod.yml up -d
 cd backend && go test ./... -v
 
 # iOS
-cd ios/VPNGod && xcodegen generate   # regenerate .xcodeproj from project.yml
-open VPNGod.xcodeproj                # build & run in Xcode
+cd ios/VPNDan && xcodegen generate   # regenerate .xcodeproj from project.yml
+open VPNDan.xcodeproj                # build & run in Xcode
 ```
 
 ### Required Environment Variables (backend)
@@ -62,12 +62,12 @@ open VPNGod.xcodeproj                # build & run in Xcode
 
 **Handler pattern**: Huma input/output structs → handler func → store interface. Dependencies injected via constructor (`NewAuthHandler(store, jwt)`).
 
-### iOS App (`/ios/VPNGod`)
+### iOS App (`/ios/VPNDan`)
 
 - **Swift 5.9+**, **SwiftUI**, **iOS 17+**
 - **XcodeGen** (`project.yml`) generates the Xcode project — edit `project.yml`, not `.xcodeproj`
-- Two targets: `VPNGod` (main app) + `PacketTunnel` (Network Extension)
-- Bundle: `com.vpngod.VPNGod`, App Group: `group.com.vpngod.VPNGod`
+- Two targets: `VPNDan` (main app) + `PacketTunnel` (Network Extension)
+- Bundle: `com.vpndan.VPNDan`, App Group: `group.com.vpndan.VPNDan`
 
 **Key services** (all in `Services/`):
 - `APIClient` (actor) — URLSession networking, auto 401→refresh→retry

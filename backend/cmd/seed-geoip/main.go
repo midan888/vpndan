@@ -16,7 +16,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"vpn-god/backend/internal/config"
+	"vpn-dan/backend/internal/config"
 )
 
 // RIR delegation-stats URLs (IPv4 allocations per country)

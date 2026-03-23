@@ -1,4 +1,4 @@
-# VPN God — Peer Agent Implementation Plan
+# VPN Dan — Peer Agent Implementation Plan
 
 > Turn every user's machine into a VPN exit node. People install a lightweight agent, donate bandwidth, and everyone on the network can VPN through community peers for free.
 
@@ -6,7 +6,7 @@
 
 ## 1. Concept
 
-Today VPN God routes traffic through **dedicated servers** you control. The agent model adds a second node type — **community peers**. Any user installs a small daemon on their computer (macOS / Linux / Windows); the daemon registers with the backend as an available exit node. When another user wants to connect, the backend can assign them to a community peer instead of (or in addition to) a dedicated server.
+Today VPN Dan routes traffic through **dedicated servers** you control. The agent model adds a second node type — **community peers**. Any user installs a small daemon on their computer (macOS / Linux / Windows); the daemon registers with the backend as an available exit node. When another user wants to connect, the backend can assign them to a community peer instead of (or in addition to) a dedicated server.
 
 **Key properties:**
 
@@ -110,10 +110,10 @@ ALTER TABLE servers ADD COLUMN node_type VARCHAR(10) DEFAULT 'server';
 
 ### 4.1 Agent binary
 
-A single Go binary: `vpngod-agent`
+A single Go binary: `vpndan-agent`
 
 ```
-vpngod-agent/
+vpndan-agent/
 ├── cmd/
 │   └── agent/
 │       └── main.go          # CLI entry point
@@ -137,8 +137,8 @@ vpngod-agent/
 
 ```
 1. INSTALL & AUTH
-   - User downloads binary (or `brew install vpngod-agent`)
-   - Runs `vpngod-agent login` → opens browser for OAuth or prompts email/password
+   - User downloads binary (or `brew install vpndan-agent`)
+   - Runs `vpndan-agent login` → opens browser for OAuth or prompts email/password
    - Stores JWT tokens in OS keychain / config file
 
 2. REGISTER
@@ -269,7 +269,7 @@ Consumer App                    Backend                         Peer Agent
 - Connecting as a consumer **spends bandwidth credits**
 - Balance = total donated − total consumed + seed
 - Users with zero or negative balance are deprioritized (slower matchmaking, not blocked entirely)
-- Dedicated servers (owned by VPN God) are unrestricted for paying users (future monetization)
+- Dedicated servers (owned by VPN Dan) are unrestricted for paying users (future monetization)
 
 ### Implementation
 
@@ -414,7 +414,7 @@ vpn-god/
 │   ├── cmd/relay/
 │   ├── internal/relay/
 │   └── go.mod
-├── ios/VPNGod/                 # Existing iOS app (extended)
+├── ios/VPNDan/                 # Existing iOS app (extended)
 ├── scripts/
 │   ├── setup-vps.sh
 │   └── install-agent.sh       # NEW — one-liner agent installer

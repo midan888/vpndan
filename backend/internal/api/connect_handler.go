@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strings"
 
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/models"
-	"vpn-god/backend/internal/store"
-	"vpn-god/backend/internal/wireguard"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/models"
+	"vpn-dan/backend/internal/store"
+	"vpn-dan/backend/internal/wireguard"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/google/uuid"

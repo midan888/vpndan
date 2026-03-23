@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
-	"vpn-god/backend/internal/models"
+	"vpn-dan/backend/internal/models"
 )
 
 type PostgresPeerStore struct {

@@ -13,11 +13,11 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
-	"vpn-god/backend/internal/api"
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/config"
-	"vpn-god/backend/internal/store"
-	"vpn-god/backend/internal/wireguard"
+	"vpn-dan/backend/internal/api"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/config"
+	"vpn-dan/backend/internal/store"
+	"vpn-dan/backend/internal/wireguard"
 )
 
 func main() {

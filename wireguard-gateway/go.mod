@@ -1,3 +1,3 @@
-module vpn-god/wireguard-gateway
+module vpn-dan/wireguard-gateway
 
 go 1.25.0

@@ -12,7 +12,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-60 bg-slate-800 text-white flex flex-col">
-      <div className="p-6 text-xl font-bold tracking-tight">VPN God Admin</div>
+      <div className="p-6 text-xl font-bold tracking-tight">VPN Dan Admin</div>
       <nav className="flex-1 px-3 space-y-1">
         {links.map((link) => (
           <NavLink

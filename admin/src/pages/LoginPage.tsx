@@ -27,7 +27,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-800 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-gray-900 text-center">VPN God Admin</h1>
+        <h1 className="text-2xl font-bold text-gray-900 text-center">VPN Dan Admin</h1>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>

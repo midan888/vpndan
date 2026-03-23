@@ -3,9 +3,9 @@ package api
 import (
 	"net/http"
 
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/store"
-	"vpn-god/backend/internal/wireguard"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/store"
+	"vpn-dan/backend/internal/wireguard"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
@@ -14,7 +14,7 @@ import (
 func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, geoip store.GeoIPStore, jwtService *auth.JWTService, wg wireguard.PeerManager, corsOrigin string) http.Handler {
 	mux := http.NewServeMux()
 
-	humaAPI := humago.New(mux, huma.DefaultConfig("VPN God API", "1.0.0"))
+	humaAPI := humago.New(mux, huma.DefaultConfig("VPN Dan API", "1.0.0"))
 
 	authHandler := NewAuthHandler(users, jwtService)
 

@@ -1,4 +1,4 @@
-# Admin Area Specification — VPN God
+# Admin Area Specification — VPN Dan
 
 ## Context
 

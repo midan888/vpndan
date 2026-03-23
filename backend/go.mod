@@ -1,4 +1,4 @@
-module vpn-god/backend
+module vpn-dan/backend
 
 go 1.25.0
 

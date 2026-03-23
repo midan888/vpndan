@@ -58,7 +58,7 @@ jobs:
           username: root
           password: ${{ secrets.VPS_PASSWORD }}
           source: "docker-compose.prod.yml,Caddyfile"
-          target: /root/vpngod/
+          target: /root/vpndan/
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1
@@ -68,8 +68,8 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             set -e
-            mkdir -p /root/vpngod
-            cd /root/vpngod
+            mkdir -p /root/vpndan
+            cd /root/vpndan
 
             # Generate secrets on first deploy
             if [ ! -f .env ]; then

@@ -10,9 +10,9 @@ import (
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/models"
-	"vpn-god/backend/internal/store"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/models"
+	"vpn-dan/backend/internal/store"
 )
 
 // mockUserStore implements store.UserStore for testing.

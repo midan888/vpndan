@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/models"
-	"vpn-god/backend/internal/store"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/models"
+	"vpn-dan/backend/internal/store"
 )
 
 type fullMockServerStore struct {

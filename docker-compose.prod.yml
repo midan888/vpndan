@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: vpngod
+      POSTGRES_DB: vpndan
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
@@ -29,7 +29,7 @@ services:
       - caddy_config:/config
 
   wireguard:
-    image: ghcr.io/midan888/vpn-god/wireguard-gateway:latest
+    image: ghcr.io/midan888/vpn-dan/wireguard-gateway:latest
     restart: unless-stopped
     ports:
       - "51820:51820/udp"
@@ -57,12 +57,12 @@ services:
       net.ipv4.conf.all.src_valid_mark: "1"
 
   backend:
-    image: ghcr.io/midan888/vpn-god/backend:latest
+    image: ghcr.io/midan888/vpn-dan/backend:latest
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"
     environment:
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpngod?sslmode=disable
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpndan?sslmode=disable
       JWT_SECRET: ${JWT_SECRET}
       PORT: "8080"
       WIREGUARD_ADMIN_URL: http://wireguard:9080
@@ -75,16 +75,16 @@ services:
         condition: service_started
 
   admin:
-    image: ghcr.io/midan888/vpn-god/admin:latest
+    image: ghcr.io/midan888/vpn-dan/admin:latest
     restart: unless-stopped
     depends_on:
       - backend
 
   seed-geoip:
-    image: ghcr.io/midan888/vpn-god/backend:latest
+    image: ghcr.io/midan888/vpn-dan/backend:latest
     command: ["seed-geoip"]
     environment:
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpngod?sslmode=disable
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpndan?sslmode=disable
       COUNTRIES: ${GEOIP_COUNTRIES:-}
     depends_on:
       postgres:

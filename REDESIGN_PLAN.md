@@ -1,6 +1,6 @@
-# VPN God — UI/UX Redesign & Brand Identity Plan
+# VPN Dan — UI/UX Redesign & Brand Identity Plan
 
-> A comprehensive plan for transforming VPN God from a functional MVP into a polished, premium VPN application.
+> A comprehensive plan for transforming VPN Dan from a functional MVP into a polished, premium VPN application.
 
 ---
 
@@ -41,7 +41,7 @@
 ## 2. Brand Identity
 
 ### Brand Personality
-**VPN God** is bold, confident, and powerful. Not corporate. Not playful. It's the app that makes you feel invincible online. Think: premium streetwear meets cybersecurity.
+**VPN Dan** is bold, confident, and powerful. Not corporate. Not playful. It's the app that makes you feel invincible online. Think: premium streetwear meets cybersecurity.
 
 ### Naming & Voice
 - **Tagline:** "One tap. Total privacy."
@@ -57,7 +57,7 @@
 - **Variations:** Create 1024x1024 master, export for all iOS sizes.
 
 ### Logo
-- **Wordmark:** "VPN GOD" in a bold geometric sans-serif (SF Pro Display Bold or custom).
+- **Wordmark:** "VPN DAN" in a bold geometric sans-serif (SF Pro Display Bold or custom).
 - **Icon + Wordmark** lockup for splash screens and marketing.
 - **The "G" in God** could subtly incorporate a shield shape.
 
@@ -194,7 +194,7 @@ App Launch
 ### 5.1 Splash / Launch Screen
 - Dark background (#0A0E1A)
 - Centered app icon with subtle glow animation
-- "VPN GOD" wordmark below icon
+- "VPN DAN" wordmark below icon
 - Transition: icon scales up slightly, then fades into main app
 
 ### 5.2 Onboarding (3 screens)
@@ -202,13 +202,13 @@ App Launch
 - Full-screen dark background with subtle gradient orb (violet → teal)
 - Large shield icon with glow
 - Headline: "Total Privacy. One Tap."
-- Subtext: "VPN God encrypts your connection and hides your identity."
+- Subtext: "VPN Dan encrypts your connection and hides your identity."
 - CTA: "Get Started" (primary gradient button)
 
 **Screen 2 — VPN Permission**
 - Shield icon with lock
 - Headline: "Allow VPN Configuration"
-- Subtext: "VPN God needs permission to create a secure tunnel. Your data never leaves your device unencrypted."
+- Subtext: "VPN Dan needs permission to create a secure tunnel. Your data never leaves your device unencrypted."
 - CTA: "Allow" → triggers iOS VPN permission dialog
 - Secondary: "Learn More" text link
 
@@ -224,7 +224,7 @@ App Launch
 ### 5.3 Auth Screen (Login / Register)
 **Layout:**
 - Dark background with subtle gradient orb at top
-- App icon + "VPN GOD" wordmark at top (compact)
+- App icon + "VPN DAN" wordmark at top (compact)
 - Segmented control: Login | Register (custom styled, not default)
 - Input fields: glassmorphism card style, custom text fields with floating labels
 - Primary CTA: Full-width gradient button ("Sign In" / "Create Account")
@@ -386,7 +386,7 @@ Same content as the bottom sheet but full-screen with more room.
 │                                        │
 │  [Sign Out]                            │
 │                                        │
-│  VPN God v1.0.0                        │
+│  VPN Dan v1.0.0                        │
 └────────────────────────────────────────┘
 ```
 
@@ -463,7 +463,7 @@ Triggered when user taps a premium server or premium feature.
 │                                        │
 │         ⚡ 🛡️ ⚡                        │
 │                                        │
-│       Unlock VPN God                   │
+│       Unlock VPN Dan                   │
 │         Premium                        │
 │                                        │
 │  "Unlimited servers. Maximum speed.    │
@@ -557,7 +557,7 @@ Triggered when user taps a premium server or premium feature.
 
 - [ ] **6.1** Implement custom `TabBarView` with glassmorphism background
 - [ ] **6.2** Create `MainTabView` combining Home, Servers, Settings
-- [ ] **6.3** Update `VPNGodApp.swift` to use new navigation structure
+- [ ] **6.3** Update `VPNDanApp.swift` to use new navigation structure
 - [ ] **6.4** Remove old NavigationStack-based navigation
 
 ### Phase 7: Onboarding
@@ -568,7 +568,7 @@ Triggered when user taps a premium server or premium feature.
 - [ ] **7.3** Build Screen 2: VPN permission request
 - [ ] **7.4** Build Screen 3: Personalization (optional)
 - [ ] **7.5** Add onboarding completion flag (UserDefaults)
-- [ ] **7.6** Update `VPNGodApp.swift` to show onboarding on first launch
+- [ ] **7.6** Update `VPNDanApp.swift` to show onboarding on first launch
 
 ### Phase 8: Monetization (if applicable)
 > Add premium tier UI and paywall.
@@ -597,9 +597,9 @@ Triggered when user taps a premium server or premium feature.
 ## Quick Reference: File Structure
 
 ```
-VPNGod/
+VPNDan/
 ├── App/
-│   └── VPNGodApp.swift
+│   └── VPNDanApp.swift
 ├── DesignSystem/
 │   ├── Colors.swift
 │   ├── Typography.swift

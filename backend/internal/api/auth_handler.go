@@ -6,9 +6,9 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"golang.org/x/crypto/bcrypt"
-	"vpn-god/backend/internal/auth"
-	"vpn-god/backend/internal/models"
-	"vpn-god/backend/internal/store"
+	"vpn-dan/backend/internal/auth"
+	"vpn-dan/backend/internal/models"
+	"vpn-dan/backend/internal/store"
 )
 
 type AuthHandler struct {
