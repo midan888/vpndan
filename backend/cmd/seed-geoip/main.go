@@ -57,7 +57,7 @@ func main() {
 	defer db.Close()
 
 	ctx := context.Background()
-	client := &http.Client{Timeout: 60 * time.Second}
+	client := &http.Client{Timeout: 5 * time.Minute}
 
 	var allocs []allocation
 
@@ -80,24 +80,21 @@ func main() {
 		byCountry[a.country] = append(byCountry[a.country], a.cidr)
 	}
 
-	// Insert into database (clear existing first, per country)
+	// Insert into database (delete + insert in same transaction per country)
 	for country, cidrs := range byCountry {
 		log.Printf("seeding %s: %d CIDRs", country, len(cidrs))
 
-		// Delete existing
-		if _, err := db.ExecContext(ctx, `DELETE FROM country_ips WHERE country = $1`, country); err != nil {
-			log.Printf("warning: failed to delete existing %s: %v", country, err)
-			continue
-		}
-
-		// Batch insert
 		if err := bulkInsert(ctx, db, country, cidrs); err != nil {
 			log.Printf("warning: failed to insert %s: %v", country, err)
 			continue
 		}
 	}
 
-	log.Printf("done! seeded %d countries", len(byCountry))
+	total := 0
+	for _, cidrs := range byCountry {
+		total += len(cidrs)
+	}
+	log.Printf("done! seeded %d countries, %d total CIDRs", len(byCountry), total)
 }
 
 func fetchAndParse(client *http.Client, url string, filter map[string]bool) ([]allocation, error) {
@@ -167,7 +164,11 @@ func bulkInsert(ctx context.Context, db *sqlx.DB, country string, cidrs []string
 	}
 	defer tx.Rollback()
 
-	// Use COPY-like batch approach with prepared statement
+	// Delete existing data for this country (inside tx so it rolls back on failure)
+	if _, err := tx.ExecContext(ctx, `DELETE FROM country_ips WHERE country = $1`, country); err != nil {
+		return fmt.Errorf("delete %s: %w", country, err)
+	}
+
 	stmt, err := tx.PrepareContext(ctx,
 		`INSERT INTO country_ips (country, cidr) VALUES ($1, $2::cidr)`)
 	if err != nil {
