@@ -4,6 +4,8 @@ import type {
   AdminServerResponse,
   ServerTrafficResponse,
   CreateServerRequest,
+  GeoIPCountry,
+  CountryCIDRsResponse,
 } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
@@ -105,4 +107,9 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
+
+  listGeoIPCountries: () => request<GeoIPCountry[]>('/api/v1/geoip/countries'),
+
+  getCountryCIDRs: (country: string) =>
+    request<CountryCIDRsResponse>(`/api/v1/geoip/${country}`),
 };

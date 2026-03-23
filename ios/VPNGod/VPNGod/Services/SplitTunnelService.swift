@@ -41,6 +41,19 @@ final class SplitTunnelService {
         config.enabledPresets.contains(preset)
     }
 
+    func toggleCountry(_ country: String) {
+        if config.excludedCountries.contains(country) {
+            config.excludedCountries.remove(country)
+        } else {
+            config.excludedCountries.insert(country)
+        }
+        save()
+    }
+
+    func isCountryExcluded(_ country: String) -> Bool {
+        config.excludedCountries.contains(country)
+    }
+
     func addEntry(_ entry: ExcludedEntry) {
         guard !config.excludedEntries.contains(where: { $0.value == entry.value }) else { return }
         config.excludedEntries.append(entry)
@@ -81,6 +94,16 @@ final class SplitTunnelService {
                 let ips = await Self.resolveDomain(entry.value)
                     .filter { !$0.isEmpty }
                 routes.append(contentsOf: ips.map { "\($0)/32" })
+            }
+        }
+
+        // Country bypass — fetch CIDRs from backend
+        for country in config.excludedCountries {
+            do {
+                let cidrs = try await APIClient.shared.getCountryCIDRs(country: country)
+                routes.append(contentsOf: cidrs)
+            } catch {
+                print("[SplitTunnel] failed to fetch CIDRs for \(country): \(error)")
             }
         }
 

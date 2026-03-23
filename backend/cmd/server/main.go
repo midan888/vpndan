@@ -43,6 +43,7 @@ func main() {
 	userStore := store.NewPostgresUserStore(db)
 	serverStore := store.NewPostgresServerStore(db)
 	peerStore := store.NewPostgresPeerStore(db)
+	geoipStore := store.NewPostgresGeoIPStore(db)
 	jwtService := auth.NewJWTService(cfg.JWTSecret)
 	var wgManager wireguard.PeerManager
 	if cfg.WireGuardAdminURL != "" {
@@ -53,7 +54,7 @@ func main() {
 		wgManager = wireguard.NewLocalPeerManager("wg0")
 	}
 
-	router := api.NewRouter(userStore, serverStore, peerStore, jwtService, wgManager, cfg.CORSOrigin)
+	router := api.NewRouter(userStore, serverStore, peerStore, geoipStore, jwtService, wgManager, cfg.CORSOrigin)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -126,6 +127,13 @@ func runMigrations(db *sqlx.DB) error {
 			ADD COLUMN IF NOT EXISTS awg_h3   BIGINT NOT NULL DEFAULT 2938475610,
 			ADD COLUMN IF NOT EXISTS awg_h4   BIGINT NOT NULL DEFAULT 1029384756`,
 		`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT false`,
+		`CREATE TABLE IF NOT EXISTS country_ips (
+			id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+			country    VARCHAR(2) NOT NULL,
+			cidr       CIDR NOT NULL,
+			created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_country_ips_country ON country_ips(country)`,
 	}
 
 	for _, m := range migrations {

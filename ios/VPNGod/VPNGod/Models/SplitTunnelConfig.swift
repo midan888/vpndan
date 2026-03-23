@@ -4,6 +4,7 @@ struct SplitTunnelConfig: Codable {
     var isEnabled: Bool = false
     var enabledPresets: Set<SplitTunnelPreset> = []
     var excludedEntries: [ExcludedEntry] = []
+    var excludedCountries: Set<String> = []
 
     var allExcludedCIDRs: [String] {
         guard isEnabled else { return [] }
@@ -44,6 +45,32 @@ struct ExcludedEntry: Codable, Identifiable, Equatable {
         case .ip: return "network"
         case .domain: return "globe"
         }
+    }
+}
+
+struct CountryCIDRsResponse: Codable {
+    let country: String
+    let cidrs: [String]
+}
+
+struct AvailableCountry: Codable, Identifiable {
+    let country: String
+    let count: Int
+
+    var id: String { country }
+
+    var displayName: String {
+        Locale.current.localizedString(forRegionCode: country) ?? country
+    }
+
+    var flag: String {
+        let base: UInt32 = 127397
+        return country
+            .uppercased()
+            .unicodeScalars
+            .compactMap { UnicodeScalar(base + $0.value) }
+            .map { String($0) }
+            .joined()
     }
 }
 

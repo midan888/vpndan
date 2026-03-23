@@ -6,6 +6,10 @@ struct SplitTunnelSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showAddEntry = false
     @State private var newEntry = ""
+    @State private var showCountryPicker = false
+    @State private var availableCountries: [AvailableCountry] = []
+    @State private var isLoadingCountries = false
+    @State private var countrySearchText = ""
 
     var body: some View {
         NavigationStack {
@@ -18,6 +22,7 @@ struct SplitTunnelSettingsView: View {
 
                         if splitTunnel.config.isEnabled {
                             presetsSection
+                            countryBypassSection
                             excludedEntriesSection
                             infoSection
                         }
@@ -89,6 +94,169 @@ struct SplitTunnelSettingsView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Country Bypass
+
+    private var countryBypassSection: some View {
+        settingsSection(title: "Bypass by Country", icon: "globe.americas") {
+            VStack(spacing: 0) {
+                if splitTunnel.config.excludedCountries.isEmpty {
+                    HStack {
+                        Text("No countries selected")
+                            .vpnTextStyle(.body, color: .vpnTextTertiary)
+                        Spacer()
+                    }
+                    .padding(.horizontal, VPNSpacing.md)
+                    .padding(.vertical, VPNSpacing.md)
+                } else {
+                    ForEach(Array(splitTunnel.config.excludedCountries.sorted().enumerated()), id: \.element) { index, code in
+                        if index > 0 { sectionDivider }
+                        HStack(spacing: VPNSpacing.md) {
+                            Text(countryFlag(for: code))
+                                .font(.system(size: 20))
+                                .frame(width: 20)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(Locale.current.localizedString(forRegionCode: code) ?? code)
+                                    .vpnTextStyle(.body)
+                                Text(code.uppercased())
+                                    .vpnTextStyle(.statusBadge, color: .vpnTextTertiary)
+                            }
+
+                            Spacer()
+
+                            Button {
+                                splitTunnel.toggleCountry(code)
+                            } label: {
+                                Image(systemName: "trash")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(Color.vpnDisconnected)
+                            }
+                        }
+                        .padding(.horizontal, VPNSpacing.md)
+                        .padding(.vertical, VPNSpacing.sm + VPNSpacing.xs)
+                    }
+                }
+
+                sectionDivider
+
+                Button {
+                    showCountryPicker = true
+                    loadCountries()
+                } label: {
+                    HStack(spacing: VPNSpacing.md) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.vpnPrimary)
+                            .frame(width: 20)
+
+                        Text("Add Country")
+                            .vpnTextStyle(.body, color: .vpnPrimary)
+
+                        Spacer()
+                    }
+                    .padding(.horizontal, VPNSpacing.md)
+                    .padding(.vertical, VPNSpacing.md)
+                }
+            }
+        }
+        .sheet(isPresented: $showCountryPicker) {
+            countryPickerSheet
+        }
+    }
+
+    private var countryPickerSheet: some View {
+        NavigationStack {
+            ZStack {
+                Color.vpnBackground.ignoresSafeArea()
+
+                if isLoadingCountries {
+                    ProgressView()
+                        .tint(Color.vpnPrimary)
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(filteredCountries) { country in
+                                let isSelected = splitTunnel.isCountryExcluded(country.country)
+                                Button {
+                                    splitTunnel.toggleCountry(country.country)
+                                } label: {
+                                    HStack(spacing: VPNSpacing.md) {
+                                        Text(country.flag)
+                                            .font(.system(size: 24))
+
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(country.displayName)
+                                                .vpnTextStyle(.body)
+                                            Text("\(country.count) IP ranges")
+                                                .vpnTextStyle(.statusBadge, color: .vpnTextTertiary)
+                                        }
+
+                                        Spacer()
+
+                                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                                            .font(.system(size: 20))
+                                            .foregroundStyle(isSelected ? Color.vpnPrimary : Color.vpnTextTertiary)
+                                    }
+                                    .padding(.horizontal, VPNSpacing.md)
+                                    .padding(.vertical, VPNSpacing.sm + VPNSpacing.xs)
+                                }
+
+                                Divider()
+                                    .background(Color.vpnBorder.opacity(0.5))
+                                    .padding(.leading, 60)
+                            }
+                        }
+                        .padding(.bottom, VPNSpacing.xxl)
+                    }
+                    .scrollIndicators(.hidden)
+                }
+            }
+            .navigationTitle("Select Countries")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $countrySearchText, prompt: "Search countries")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { showCountryPicker = false }
+                        .foregroundStyle(Color.vpnPrimary)
+                }
+            }
+        }
+    }
+
+    private var filteredCountries: [AvailableCountry] {
+        if countrySearchText.isEmpty {
+            return availableCountries
+        }
+        let query = countrySearchText.lowercased()
+        return availableCountries.filter {
+            $0.displayName.lowercased().contains(query) ||
+            $0.country.lowercased().contains(query)
+        }
+    }
+
+    private func loadCountries() {
+        guard availableCountries.isEmpty else { return }
+        isLoadingCountries = true
+        Task {
+            do {
+                availableCountries = try await APIClient.shared.getGeoIPCountries()
+            } catch {
+                print("[SplitTunnel] failed to load countries: \(error)")
+            }
+            isLoadingCountries = false
+        }
+    }
+
+    private func countryFlag(for code: String) -> String {
+        let base: UInt32 = 127397
+        return code
+            .uppercased()
+            .unicodeScalars
+            .compactMap { UnicodeScalar(base + $0.value) }
+            .map { String($0) }
+            .joined()
     }
 
     // MARK: - Excluded Entries

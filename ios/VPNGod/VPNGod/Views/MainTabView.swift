@@ -5,27 +5,23 @@ struct MainTabView: View {
     @Environment(VPNManager.self) private var vpn
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Tab content
-            Group {
-                switch selectedTab {
-                case .home:
-                    HomeView()
-                case .servers:
-                    ServersView(onServerSelected: { server in
-                        connectToServer(server)
-                        selectedTab = .home
-                    })
-                case .settings:
-                    SettingsView()
-                }
+        TabView(selection: $selectedTab) {
+            Tab("Home", systemImage: "shield.fill", value: .home) {
+                HomeView()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            // Tab bar
-            CustomTabBar(selectedTab: $selectedTab)
+            Tab("Servers", systemImage: "globe", value: .servers) {
+                ServersView(onServerSelected: { server in
+                    connectToServer(server)
+                    selectedTab = .home
+                })
+            }
+
+            Tab("Settings", systemImage: "gearshape", value: .settings) {
+                SettingsView()
+            }
         }
-        .ignoresSafeArea(.keyboard)
+        .tabBarMinimizeBehavior(.onScrollDown)
     }
 
     private func connectToServer(_ server: Server) {

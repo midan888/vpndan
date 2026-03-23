@@ -11,7 +11,7 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
-func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, jwtService *auth.JWTService, wg wireguard.PeerManager, corsOrigin string) http.Handler {
+func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, geoip store.GeoIPStore, jwtService *auth.JWTService, wg wireguard.PeerManager, corsOrigin string) http.Handler {
 	mux := http.NewServeMux()
 
 	humaAPI := humago.New(mux, huma.DefaultConfig("VPN God API", "1.0.0"))
@@ -168,6 +168,27 @@ func NewRouter(users store.UserStore, servers store.ServerStore, peers store.Pee
 		Tags:        []string{"Admin"},
 		Security:    []map[string][]string{{"bearer": {}}},
 	}, adminHandler.UpdateServer)
+
+	// GeoIP routes
+	geoipHandler := NewGeoIPHandler(geoip, jwtService)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/api/v1/geoip/countries",
+		OperationID: "list-geoip-countries",
+		Summary:     "List countries with available CIDR data",
+		Tags:        []string{"GeoIP"},
+		Security:    []map[string][]string{{"bearer": {}}},
+	}, geoipHandler.ListCountries)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/api/v1/geoip/{country}",
+		OperationID: "get-country-cidrs",
+		Summary:     "Get CIDR ranges for a country",
+		Tags:        []string{"GeoIP"},
+		Security:    []map[string][]string{{"bearer": {}}},
+	}, geoipHandler.GetCountryCIDRs)
 
 	// CORS middleware (only active when CORS_ORIGIN is set, i.e. dev)
 	if corsOrigin != "" {

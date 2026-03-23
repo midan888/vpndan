@@ -42,6 +42,17 @@ actor APIClient {
         return try await get("/servers", authenticated: true)
     }
 
+    // MARK: - GeoIP Endpoints
+
+    func getGeoIPCountries() async throws -> [AvailableCountry] {
+        return try await get("/geoip/countries", authenticated: true)
+    }
+
+    func getCountryCIDRs(country: String) async throws -> [String] {
+        let response: CountryCIDRsResponse = try await get("/geoip/\(country)", authenticated: true)
+        return response.cidrs
+    }
+
     // MARK: - Connect Endpoints
 
     func connect(serverID: UUID) async throws -> WireGuardConfig {

@@ -37,7 +37,7 @@ struct SettingsView: View {
                 }
                 .padding(.horizontal, VPNSpacing.md)
                 .padding(.top, VPNSpacing.md)
-                .padding(.bottom, 100)
+                .padding(.bottom, VPNSpacing.lg)
             }
             .scrollIndicators(.hidden)
         }

@@ -60,3 +60,13 @@ export interface CreateServerRequest {
   port: number;
   public_key: string;
 }
+
+export interface GeoIPCountry {
+  country: string;
+  count: number;
+}
+
+export interface CountryCIDRsResponse {
+  country: string;
+  cidrs: string[];
+}

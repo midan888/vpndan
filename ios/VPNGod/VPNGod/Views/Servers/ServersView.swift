@@ -226,7 +226,7 @@ struct ServersView: View {
                 serverGroup(displayedServers)
                     .padding(.horizontal, VPNSpacing.md)
                     .padding(.top, VPNSpacing.sm)
-                    .padding(.bottom, 100)
+                    .padding(.bottom, VPNSpacing.lg)
             }
         }
         .refreshable {

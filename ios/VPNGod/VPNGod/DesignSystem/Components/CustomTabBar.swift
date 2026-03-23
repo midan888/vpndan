@@ -43,6 +43,7 @@ struct CustomTabBar: View {
         }
         .padding(.top, VPNSpacing.sm + VPNSpacing.xs)
         .padding(.bottom, VPNSpacing.sm)
+        .safeAreaPadding(.bottom)
         .background(
             UnevenRoundedRectangle(
                 topLeadingRadius: VPNRadius.tabBar,
@@ -70,12 +71,12 @@ struct CustomTabBar: View {
         } label: {
             VStack(spacing: VPNSpacing.xs) {
                 Image(systemName: isSelected ? tab.selectedIcon : tab.icon)
-                    .font(.system(size: 20, weight: isSelected ? .semibold : .regular))
+                    .font(.system(size: 24, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? Color.vpnPrimary : Color.vpnTextTertiary)
                     .symbolRenderingMode(.hierarchical)
 
                 Text(tab.title)
-                    .font(.system(size: 10, weight: isSelected ? .semibold : .medium))
+                    .font(.system(size: 12, weight: isSelected ? .semibold : .medium))
                     .foregroundStyle(isSelected ? Color.vpnPrimary : Color.vpnTextTertiary)
             }
             .frame(maxWidth: .infinity)

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 const links = [
   { to: '/users', label: 'Users' },
   { to: '/servers', label: 'Servers' },
+  { to: '/geoip', label: 'GeoIP Data' },
 ];
 
 export default function Sidebar() {
