@@ -7,12 +7,14 @@ RUN go mod download
 
 COPY . .
 RUN CGO_ENABLED=0 go build -o /vpn-god ./cmd/server
+RUN CGO_ENABLED=0 go build -o /seed-geoip ./cmd/seed-geoip
 
 FROM alpine:3.21
 
 RUN apk add --no-cache wireguard-tools
 
 COPY --from=builder /vpn-god /usr/local/bin/vpn-god
+COPY --from=builder /seed-geoip /usr/local/bin/seed-geoip
 
 EXPOSE 8080
 

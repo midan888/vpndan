@@ -83,6 +83,7 @@ open VPNGod.xcodeproj                # build & run in Xcode
 ## Code Conventions
 
 ### Go
+- When adding a new environment variable, always add it to `backend/.env.example` with a comment and sensible default
 - Explicit error returns; wrap with `fmt.Errorf("context: %w", err)`
 - Interfaces for store layer (`UserStore`, `ServerStore`, `PeerStore`)
 - Context passed through all DB operations

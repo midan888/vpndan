@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/binary"
 	"fmt"
 	"log"
-	"math"
+	"math/bits"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -14,6 +16,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"vpn-god/backend/internal/config"
 )
 
 // RIR delegation-stats URLs (IPv4 allocations per country)
@@ -31,6 +34,8 @@ type allocation struct {
 }
 
 func main() {
+	config.LoadEnvFile(".env")
+
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
 		log.Fatal("DATABASE_URL environment variable is required")
@@ -137,19 +142,19 @@ func fetchAndParse(client *http.Client, url string, filter map[string]bool) ([]a
 			continue
 		}
 
-		// value = number of hosts; convert to CIDR prefix
+		// value = number of hosts; decompose into valid CIDRs
 		hosts, err := strconv.Atoi(value)
 		if err != nil || hosts <= 0 {
 			continue
 		}
 
-		prefix := 32 - int(math.Log2(float64(hosts)))
-		cidr := fmt.Sprintf("%s/%d", start, prefix)
-
-		allocs = append(allocs, allocation{
-			country: strings.ToUpper(country),
-			cidr:    cidr,
-		})
+		cidrs := ipRangeToCIDRs(net.ParseIP(start).To4(), uint32(hosts))
+		for _, cidr := range cidrs {
+			allocs = append(allocs, allocation{
+				country: strings.ToUpper(country),
+				cidr:    cidr,
+			})
+		}
 	}
 
 	return allocs, scanner.Err()
@@ -178,3 +183,4 @@ func bulkInsert(ctx context.Context, db *sqlx.DB, country string, cidrs []string
 
 	return tx.Commit()
 }
+

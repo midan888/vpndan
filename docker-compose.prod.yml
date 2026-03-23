@@ -80,6 +80,17 @@ services:
     depends_on:
       - backend
 
+  seed-geoip:
+    image: ghcr.io/midan888/vpn-god/backend:latest
+    command: ["seed-geoip"]
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpngod?sslmode=disable
+      COUNTRIES: ${GEOIP_COUNTRIES:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - tools
 
 volumes:
   pgdata:

@@ -18,7 +18,7 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
-	loadEnvFile(".env")
+	LoadEnvFile(".env")
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
@@ -46,8 +46,8 @@ func Load() (*Config, error) {
 	}, nil
 }
 
-// loadEnvFile reads a .env file and sets any variables not already in the environment.
-func loadEnvFile(path string) {
+// LoadEnvFile reads a .env file and sets any variables not already in the environment.
+func LoadEnvFile(path string) {
 	f, err := os.Open(path)
 	if err != nil {
 		return // missing .env is fine, just use real env vars
