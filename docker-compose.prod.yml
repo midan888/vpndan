@@ -80,6 +80,12 @@ services:
     depends_on:
       - backend
 
+  website:
+    image: ghcr.io/midan888/vpndan/website:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+
   seed-geoip:
     image: ghcr.io/midan888/vpndan/backend:latest
     command: ["seed-geoip"]

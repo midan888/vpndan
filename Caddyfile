@@ -1,3 +1,11 @@
+vpndan.com {
+	reverse_proxy website:3000
+}
+
+www.vpndan.com {
+	redir https://vpndan.com{uri} permanent
+}
+
 api.vpndan.com {
 	reverse_proxy backend:8080
 }
