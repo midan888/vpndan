@@ -188,11 +188,12 @@ func runNodeAgent(ctx context.Context, ncfg nodeConfig, gcfg *gatewayConfig, pub
 }
 
 func registerNode(ncfg nodeConfig, gcfg *gatewayConfig, publicKey string) error {
+	port, _ := strconv.Atoi(gcfg.ListenPort)
 	body, err := json.Marshal(map[string]any{
 		"name":         ncfg.NodeName,
 		"country":      ncfg.Country,
 		"host":         ncfg.Host,
-		"port":         gcfg.ListenPort,
+		"port":         port,
 		"public_key":   publicKey,
 		"wg_admin_url": ncfg.WGAdminURL,
 		"awg_jc":       gcfg.Jc,
