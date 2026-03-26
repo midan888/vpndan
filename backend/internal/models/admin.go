@@ -71,3 +71,36 @@ type ResetPasswordRequest struct {
 type UpdateServerRequest struct {
 	IsActive *bool `json:"is_active" doc:"Whether the server is active"`
 }
+
+// Node agent registration request — sent by node-agent on each VPS.
+type NodeRegisterRequest struct {
+	Name       string `json:"name" minLength:"1" doc:"Server display name"`
+	Country    string `json:"country" minLength:"2" maxLength:"2" doc:"ISO 3166-1 alpha-2 country code"`
+	Host       string `json:"host" minLength:"1" doc:"Server public IP or hostname"`
+	Port       int    `json:"port" minimum:"1" maximum:"65535" doc:"WireGuard listen port"`
+	PublicKey  string `json:"public_key" minLength:"1" doc:"Server WireGuard public key"`
+	WGAdminURL string `json:"wg_admin_url" minLength:"1" doc:"WireGuard gateway admin URL reachable from backend"`
+	// AWG obfuscation params
+	AWGJc   int   `json:"awg_jc" doc:"Junk packet count"`
+	AWGJmin int   `json:"awg_jmin" doc:"Junk packet min size"`
+	AWGJmax int   `json:"awg_jmax" doc:"Junk packet max size"`
+	AWGS1   int   `json:"awg_s1" doc:"Header byte shift 1"`
+	AWGS2   int   `json:"awg_s2" doc:"Header byte shift 2"`
+	AWGH1   int64 `json:"awg_h1" doc:"DPI defeat byte 1"`
+	AWGH2   int64 `json:"awg_h2" doc:"DPI defeat byte 2"`
+	AWGH3   int64 `json:"awg_h3" doc:"DPI defeat byte 3"`
+	AWGH4   int64 `json:"awg_h4" doc:"DPI defeat byte 4"`
+}
+
+type NodeRegisterResponse struct {
+	ServerID string `json:"server_id" doc:"UUID of the registered server"`
+	Message  string `json:"message"`
+}
+
+type NodeHeartbeatRequest struct {
+	Host string `json:"host" minLength:"1" doc:"Server public IP (identifies which server)"`
+}
+
+type NodeHeartbeatResponse struct {
+	Message string `json:"message"`
+}

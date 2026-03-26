@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 	"vpn-dan/backend/internal/models"
@@ -33,6 +34,9 @@ type ServerStore interface {
 	CreateServer(ctx context.Context, s *models.Server) (*models.Server, error)
 	DeleteServer(ctx context.Context, id uuid.UUID) error
 	UpdateServerStatus(ctx context.Context, id uuid.UUID, isActive bool) error
+	UpsertServerByHost(ctx context.Context, s *models.Server) (*models.Server, error)
+	UpdateHeartbeat(ctx context.Context, host string) error
+	MarkStaleServersInactive(ctx context.Context, staleThreshold time.Duration) (int, error)
 }
 
 type PeerStore interface {

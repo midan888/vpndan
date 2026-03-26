@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -118,6 +119,36 @@ func (m *mockServerStore) UpdateServerStatus(_ context.Context, _ uuid.UUID, _ b
 	return store.ErrServerNotFound
 }
 
+func (m *mockServerStore) UpsertServerByHost(_ context.Context, s *models.Server) (*models.Server, error) {
+	return s, nil
+}
+
+func (m *mockServerStore) UpdateHeartbeat(_ context.Context, _ string) error {
+	return nil
+}
+
+func (m *mockServerStore) MarkStaleServersInactive(_ context.Context, _ time.Duration) (int, error) {
+	return 0, nil
+}
+
+type mockGeoIPStore struct{}
+
+func (m *mockGeoIPStore) GetCIDRsByCountry(_ context.Context, _ string) ([]string, error) {
+	return nil, nil
+}
+
+func (m *mockGeoIPStore) ListAvailableCountries(_ context.Context) ([]models.AvailableCountry, error) {
+	return nil, nil
+}
+
+func (m *mockGeoIPStore) BulkInsertCIDRs(_ context.Context, _ string, _ []string) error {
+	return nil
+}
+
+func (m *mockGeoIPStore) DeleteByCountry(_ context.Context, _ string) error {
+	return nil
+}
+
 type mockPeerManager struct{}
 
 func (m *mockPeerManager) AddPeer(_, _ string) error    { return nil }
@@ -149,7 +180,7 @@ func (m *mockPeerStore) ListAllPeers(_ context.Context) ([]models.Peer, error) {
 func setupRouter() (http.Handler, *mockUserStore) {
 	ms := newMockUserStore()
 	jwtSvc := auth.NewJWTService("test-secret")
-	router := NewRouter(ms, &mockServerStore{}, &mockPeerStore{}, jwtSvc, &mockPeerManager{}, "")
+	router := NewRouter(ms, &mockServerStore{}, &mockPeerStore{}, &mockGeoIPStore{}, jwtSvc, &mockPeerManager{}, "", "")
 	return router, ms
 }
 

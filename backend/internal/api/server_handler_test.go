@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"time"
+
 	"vpn-dan/backend/internal/auth"
 	"vpn-dan/backend/internal/models"
 	"vpn-dan/backend/internal/store"
@@ -69,11 +71,24 @@ func (m *fullMockServerStore) UpdateServerStatus(_ context.Context, id uuid.UUID
 	return nil
 }
 
+func (m *fullMockServerStore) UpsertServerByHost(_ context.Context, s *models.Server) (*models.Server, error) {
+	m.servers[s.ID] = s
+	return s, nil
+}
+
+func (m *fullMockServerStore) UpdateHeartbeat(_ context.Context, _ string) error {
+	return nil
+}
+
+func (m *fullMockServerStore) MarkStaleServersInactive(_ context.Context, _ time.Duration) (int, error) {
+	return 0, nil
+}
+
 func setupServerRouter() (http.Handler, *fullMockServerStore, *auth.JWTService) {
 	ms := newMockUserStore()
 	ss := newFullMockServerStore()
 	jwtSvc := auth.NewJWTService("test-secret")
-	router := NewRouter(ms, ss, &mockPeerStore{}, jwtSvc, &mockPeerManager{}, "")
+	router := NewRouter(ms, ss, &mockPeerStore{}, &mockGeoIPStore{}, jwtSvc, &mockPeerManager{}, "", "")
 	return router, ss, jwtSvc
 }
 

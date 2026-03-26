@@ -1,0 +1,47 @@
+# VPN node — run this on each VPS.
+#
+# Usage:
+#   1. Run setup-vps.sh on a fresh Ubuntu VPS
+#   2. Copy .env.example to .env and fill in values
+#   3. docker compose up -d
+
+services:
+  gateway:
+    image: ghcr.io/midan888/vpndan/node:latest
+    restart: unless-stopped
+    ports:
+      - "51820:51820/udp"
+      - "9080:9080"
+    environment:
+      # WireGuard
+      WG_ADDRESS: 10.0.0.1/24
+      WG_LISTEN_PORT: "51820"
+      WG_ADMIN_ADDR: 0.0.0.0:9080
+      # AWG obfuscation
+      AWG_JC: ${AWG_JC:-4}
+      AWG_JMIN: ${AWG_JMIN:-40}
+      AWG_JMAX: ${AWG_JMAX:-70}
+      AWG_S1: ${AWG_S1:-0}
+      AWG_S2: ${AWG_S2:-0}
+      AWG_H1: ${AWG_H1:-1928394756}
+      AWG_H2: ${AWG_H2:-3847291056}
+      AWG_H3: ${AWG_H3:-2938475610}
+      AWG_H4: ${AWG_H4:-1029384756}
+      # Node registration (gateway registers itself with central API)
+      API_URL: ${API_URL}
+      NODE_SECRET: ${NODE_SECRET}
+      NODE_NAME: ${NODE_NAME}
+      NODE_COUNTRY: ${NODE_COUNTRY}
+      NODE_HOST: ${NODE_HOST}
+      WG_ADMIN_URL: ${WG_ADMIN_URL:-http://${NODE_HOST}:9080}
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /dev/net/tun:/dev/net/tun
+      - gateway_config:/config
+    sysctls:
+      net.ipv4.ip_forward: "1"
+      net.ipv4.conf.all.src_valid_mark: "1"
+
+volumes:
+  gateway_config:

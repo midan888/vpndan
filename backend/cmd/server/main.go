@@ -54,7 +54,10 @@ func main() {
 		wgManager = wireguard.NewLocalPeerManager("wg0")
 	}
 
-	router := api.NewRouter(userStore, serverStore, peerStore, geoipStore, jwtService, wgManager, cfg.CORSOrigin)
+	router := api.NewRouter(userStore, serverStore, peerStore, geoipStore, jwtService, wgManager, cfg.CORSOrigin, cfg.NodeSecret)
+
+	// Background: mark servers with no heartbeat for 90s as inactive
+	go runStaleServerChecker(serverStore)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -127,6 +130,9 @@ func runMigrations(db *sqlx.DB) error {
 			ADD COLUMN IF NOT EXISTS awg_h3   BIGINT NOT NULL DEFAULT 2938475610,
 			ADD COLUMN IF NOT EXISTS awg_h4   BIGINT NOT NULL DEFAULT 1029384756`,
 		`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT false`,
+		`ALTER TABLE servers ADD COLUMN IF NOT EXISTS last_heartbeat_at TIMESTAMPTZ`,
+		`ALTER TABLE servers ADD COLUMN IF NOT EXISTS wg_admin_url TEXT NOT NULL DEFAULT ''`,
+		`CREATE UNIQUE INDEX IF NOT EXISTS idx_servers_host ON servers(host)`,
 		`CREATE TABLE IF NOT EXISTS country_ips (
 			id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 			country    VARCHAR(2) NOT NULL,
@@ -143,6 +149,21 @@ func runMigrations(db *sqlx.DB) error {
 	}
 
 	return nil
+}
+
+func runStaleServerChecker(servers *store.PostgresServerStore) {
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		n, err := servers.MarkStaleServersInactive(ctx, 90*time.Second)
+		cancel()
+		if err != nil {
+			log.Printf("stale server check error: %v", err)
+		} else if n > 0 {
+			log.Printf("marked %d stale server(s) inactive", n)
+		}
+	}
 }
 
 func bootstrapAdmin(db *sqlx.DB, cfg *config.Config) error {

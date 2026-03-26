@@ -15,6 +15,7 @@ type Config struct {
 	AdminEmail        string
 	AdminPassword     string
 	CORSOrigin        string
+	NodeSecret        string
 }
 
 func Load() (*Config, error) {
@@ -43,6 +44,7 @@ func Load() (*Config, error) {
 		AdminEmail:        os.Getenv("ADMIN_EMAIL"),
 		AdminPassword:     os.Getenv("ADMIN_PASSWORD"),
 		CORSOrigin:        os.Getenv("CORS_ORIGIN"),
+		NodeSecret:        os.Getenv("NODE_SECRET"),
 	}, nil
 }
 

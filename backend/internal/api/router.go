@@ -11,7 +11,7 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
-func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, geoip store.GeoIPStore, jwtService *auth.JWTService, wg wireguard.PeerManager, corsOrigin string) http.Handler {
+func NewRouter(users store.UserStore, servers store.ServerStore, peers store.PeerStore, geoip store.GeoIPStore, jwtService *auth.JWTService, wg wireguard.PeerManager, corsOrigin string, nodeSecret string) http.Handler {
 	mux := http.NewServeMux()
 
 	humaAPI := humago.New(mux, huma.DefaultConfig("VPN Dan API", "1.0.0"))
@@ -189,6 +189,26 @@ func NewRouter(users store.UserStore, servers store.ServerStore, peers store.Pee
 		Tags:        []string{"GeoIP"},
 		Security:    []map[string][]string{{"bearer": {}}},
 	}, geoipHandler.GetCountryCIDRs)
+
+	// Node agent routes (authenticated by shared secret, not JWT)
+	nodeHandler := NewNodeHandler(servers, nodeSecret)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:        http.MethodPost,
+		Path:          "/api/v1/nodes/register",
+		OperationID:   "node-register",
+		Summary:       "Register or update a VPN node",
+		Tags:          []string{"Nodes"},
+		DefaultStatus: http.StatusCreated,
+	}, nodeHandler.Register)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/api/v1/nodes/heartbeat",
+		OperationID: "node-heartbeat",
+		Summary:     "Send node heartbeat",
+		Tags:        []string{"Nodes"},
+	}, nodeHandler.Heartbeat)
 
 	// CORS middleware (only active when CORS_ORIGIN is set, i.e. dev)
 	if corsOrigin != "" {

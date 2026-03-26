@@ -51,7 +51,11 @@ func (h *ConnectHandler) Connect(ctx context.Context, input *ConnectInput) (*Con
 		return nil, huma.Error500InternalServerError("internal server error")
 	}
 	if existingPeer != nil {
-		_ = h.wg.RemovePeer(existingPeer.PublicKey)
+		oldWG := h.wg
+		if oldSrv, e := h.servers.GetServerByID(ctx, existingPeer.ServerID); e == nil && oldSrv.WGAdminURL != "" {
+			oldWG = wireguard.NewHTTPPeerManager(oldSrv.WGAdminURL)
+		}
+		_ = oldWG.RemovePeer(existingPeer.PublicKey)
 		if err := h.peers.DeletePeerByUserID(ctx, userID); err != nil {
 			return nil, huma.Error500InternalServerError("internal server error")
 		}
@@ -92,8 +96,12 @@ func (h *ConnectHandler) Connect(ctx context.Context, input *ConnectInput) (*Con
 		return nil, huma.Error500InternalServerError("internal server error")
 	}
 
-	// Register peer on the WireGuard interface
-	if err := h.wg.AddPeer(keyPair.PublicKey, clientIP); err != nil {
+	// Register peer on the WireGuard interface — use per-server admin URL if available
+	wgManager := h.wg
+	if server.WGAdminURL != "" {
+		wgManager = wireguard.NewHTTPPeerManager(server.WGAdminURL)
+	}
+	if err := wgManager.AddPeer(keyPair.PublicKey, clientIP); err != nil {
 		// Rollback: remove the peer from DB since WireGuard rejected it
 		_ = h.peers.DeletePeerByUserID(ctx, userID)
 		return nil, huma.Error500InternalServerError("failed to configure VPN tunnel")
@@ -150,8 +158,13 @@ func (h *ConnectHandler) Disconnect(ctx context.Context, input *DisconnectInput)
 		return nil, huma.Error500InternalServerError("internal server error")
 	}
 
-	// Remove peer from WireGuard interface
-	if err := h.wg.RemovePeer(peer.PublicKey); err != nil {
+	// Remove peer from WireGuard interface — use per-server admin URL if available
+	wgManager := h.wg
+	srv, srvErr := h.servers.GetServerByID(ctx, peer.ServerID)
+	if srvErr == nil && srv.WGAdminURL != "" {
+		wgManager = wireguard.NewHTTPPeerManager(srv.WGAdminURL)
+	}
+	if err := wgManager.RemovePeer(peer.PublicKey); err != nil {
 		return nil, huma.Error500InternalServerError("failed to remove VPN tunnel")
 	}
 

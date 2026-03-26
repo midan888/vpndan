@@ -1,3 +1,6 @@
+# Central API stack — runs on the main server.
+# Nodes (WireGuard + node-agent) are deployed separately via docker-compose.node.yml.
+
 services:
   postgres:
     image: postgres:17
@@ -28,34 +31,6 @@ services:
       - caddy_data:/data
       - caddy_config:/config
 
-  wireguard:
-    image: ghcr.io/midan888/vpndan/wireguard-gateway:latest
-    restart: unless-stopped
-    ports:
-      - "51820:51820/udp"
-    environment:
-      WG_ADDRESS: 10.0.0.1/24
-      WG_LISTEN_PORT: "51820"
-      WG_ADMIN_ADDR: 0.0.0.0:9080
-      # Amnezia WireGuard obfuscation params — must match values in the database
-      AWG_JC: ${AWG_JC:-4}
-      AWG_JMIN: ${AWG_JMIN:-40}
-      AWG_JMAX: ${AWG_JMAX:-70}
-      AWG_S1: ${AWG_S1:-0}
-      AWG_S2: ${AWG_S2:-0}
-      AWG_H1: ${AWG_H1:-1928394756}
-      AWG_H2: ${AWG_H2:-3847291056}
-      AWG_H3: ${AWG_H3:-2938475610}
-      AWG_H4: ${AWG_H4:-1029384756}
-    cap_add:
-      - NET_ADMIN
-    volumes:
-      - /dev/net/tun:/dev/net/tun
-      - wireguard_config:/config
-    sysctls:
-      net.ipv4.ip_forward: "1"
-      net.ipv4.conf.all.src_valid_mark: "1"
-
   backend:
     image: ghcr.io/midan888/vpndan/backend:latest
     restart: unless-stopped
@@ -65,14 +40,12 @@ services:
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vpndan?sslmode=disable
       JWT_SECRET: ${JWT_SECRET}
       PORT: "8080"
-      WIREGUARD_ADMIN_URL: http://wireguard:9080
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      NODE_SECRET: ${NODE_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
-      wireguard:
-        condition: service_started
 
   admin:
     image: ghcr.io/midan888/vpndan/admin:latest
@@ -102,4 +75,3 @@ volumes:
   pgdata:
   caddy_data:
   caddy_config:
-  wireguard_config:

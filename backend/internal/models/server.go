@@ -7,14 +7,16 @@ import (
 )
 
 type Server struct {
-	ID        uuid.UUID `json:"id" db:"id"`
-	Name      string    `json:"name" db:"name"`
-	Country   string    `json:"country" db:"country"`
-	Host      string    `json:"host" db:"host"`
-	Port      int       `json:"-" db:"port"`
-	PublicKey string    `json:"-" db:"public_key"`
-	IsActive  bool      `json:"is_active" db:"is_active"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	ID              uuid.UUID  `json:"id" db:"id"`
+	Name            string     `json:"name" db:"name"`
+	Country         string     `json:"country" db:"country"`
+	Host            string     `json:"host" db:"host"`
+	Port            int        `json:"-" db:"port"`
+	PublicKey       string     `json:"-" db:"public_key"`
+	IsActive        bool       `json:"is_active" db:"is_active"`
+	CreatedAt       time.Time  `json:"created_at" db:"created_at"`
+	LastHeartbeatAt *time.Time `json:"-" db:"last_heartbeat_at"`
+	WGAdminURL      string     `json:"-" db:"wg_admin_url"`
 	// Amnezia WireGuard obfuscation parameters
 	AWGJc   int   `json:"-" db:"awg_jc"`
 	AWGJmin int   `json:"-" db:"awg_jmin"`
