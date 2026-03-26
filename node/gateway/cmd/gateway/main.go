@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -225,7 +226,8 @@ func registerNode(ncfg nodeConfig, gcfg *gatewayConfig, publicKey string) error 
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 300 {
-		return fmt.Errorf("API returned %s", resp.Status)
+		respBody, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("API returned %s: %s", resp.Status, string(respBody))
 	}
 	return nil
 }
