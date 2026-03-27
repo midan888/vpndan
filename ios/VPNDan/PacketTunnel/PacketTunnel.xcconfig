@@ -1,2 +1,3 @@
+#include "../Config/BuildNumber.xcconfig"
 LIBRARY_SEARCH_PATHS[sdk=iphoneos*] = $(inherited) $(SRCROOT)/../amneziawg-apple/Sources/WireGuardKitGo/out-device
 LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) $(SRCROOT)/../amneziawg-apple/Sources/WireGuardKitGo/out-simulator

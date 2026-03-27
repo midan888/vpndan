@@ -1,1 +1,2 @@
+#include "BuildNumber.xcconfig"
 API_BASE_URL = https:/$()/api.vpndan.com/api/v1
