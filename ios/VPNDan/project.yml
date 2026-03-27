@@ -68,7 +68,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.vpndan.VPNDan.PacketTunnel
         INFOPLIST_FILE: PacketTunnel/Info.plist
         CODE_SIGN_ENTITLEMENTS: PacketTunnel/PacketTunnel.entitlements
-        LIBRARY_SEARCH_PATHS: $(inherited) $(SRCROOT)/../amneziawg-apple/Sources/WireGuardKitGo/out
+        LIBRARY_SEARCH_PATHS: $(inherited)
     entitlements:
       path: PacketTunnel/PacketTunnel.entitlements
       properties:
