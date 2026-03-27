@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 @MainActor
 @Observable
@@ -8,19 +9,26 @@ final class LatencyService {
     /// Server ID → latency in milliseconds (nil = not yet measured)
     private(set) var latencies: [UUID: Int] = [:]
 
-    /// When true, pings are paused and latency helpers return nil.
+    /// When true, bulk pings are paused (only connected server is pinged).
     var vpnConnected = false {
         didSet {
             if vpnConnected {
                 stopPeriodicRefresh()
-            } else if let cachedServers = _servers {
-                startPeriodicRefresh(servers: cachedServers)
+            } else {
+                stopConnectedPing()
+                if let cachedServers = _servers {
+                    startPeriodicRefresh(servers: cachedServers)
+                }
             }
         }
     }
 
+    /// The server currently being pinged while VPN is connected.
+    private(set) var connectedServerID: UUID?
+
     private var measureTask: Task<Void, Never>?
     private var refreshTimer: Timer?
+    private var connectedPingTimer: Timer?
     private var _servers: [Server]?
 
     private static let pingSession: URLSession = {
@@ -91,6 +99,24 @@ final class LatencyService {
         }
     }
 
+    /// Start pinging only the connected server (every 5s) while VPN is active.
+    func startConnectedPing(server: Server) {
+        stopConnectedPing()
+        connectedServerID = server.id
+        measure(server: server)
+        connectedPingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.measure(server: server)
+            }
+        }
+    }
+
+    func stopConnectedPing() {
+        connectedPingTimer?.invalidate()
+        connectedPingTimer = nil
+        connectedServerID = nil
+    }
+
     // MARK: - HTTP Ping
 
     /// Measures round-trip time of an HTTP GET to the server's /ping endpoint.
@@ -125,6 +151,12 @@ final class LatencyService {
         guard !vpnConnected, let ms = latencies[serverID] else { return nil }
         return LatencyQuality(ms: ms)
     }
+
+    /// Returns the connected server's latency (available even while VPN is active).
+    func connectedLatency() -> Int? {
+        guard let id = connectedServerID else { return nil }
+        return latencies[id]
+    }
 }
 
 enum LatencyQuality {
@@ -148,6 +180,23 @@ enum LatencyQuality {
         case .good: "Good"
         case .fair: "Fair"
         case .poor: "Poor"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .excellent, .good: .vpnConnected
+        case .fair: .vpnConnecting
+        case .poor: .vpnDisconnected
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .excellent: "checkmark.shield.fill"
+        case .good: "checkmark.circle.fill"
+        case .fair: "exclamationmark.circle.fill"
+        case .poor: "xmark.circle.fill"
         }
     }
 }

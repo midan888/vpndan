@@ -47,6 +47,15 @@ struct HomeView: View {
                             .vpnTextStyle(.body, color: .vpnTextSecondary)
                     }
 
+                    // Latency gauge (visible when connected)
+                    if vpn.status == .connected {
+                        LatencyGauge(latencyMs: latency.connectedLatency())
+                            .transition(.asymmetric(
+                                insertion: .scale(scale: 0.8).combined(with: .opacity),
+                                removal: .scale(scale: 0.8).combined(with: .opacity)
+                            ))
+                    }
+
                     Spacer()
                         .frame(height: VPNSpacing.xs)
 
@@ -54,7 +63,6 @@ struct HomeView: View {
                     ServerCard(
                         server: displayServer,
                         latencyMs: displayServer.flatMap { latency.latency(for: $0.id) },
-                        vpnActive: vpn.status == .connected,
                         onChangeTapped: { showServerSheet = true }
                     )
 
@@ -214,6 +222,11 @@ struct HomeView: View {
     private func handleStatusChange(from oldStatus: VPNManager.VPNStatus, to newStatus: VPNManager.VPNStatus) {
         triggerHaptic(for: newStatus)
         latency.vpnConnected = newStatus == .connected
+        if newStatus == .connected, let server = vpn.connectedServer {
+            latency.startConnectedPing(server: server)
+        } else if newStatus == .disconnected {
+            latency.stopConnectedPing()
+        }
     }
 
     // MARK: - Haptics

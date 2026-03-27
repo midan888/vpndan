@@ -3,7 +3,6 @@ import SwiftUI
 struct ServerCard: View {
     let server: Server?
     var latencyMs: Int?
-    var vpnActive: Bool = false
     let onChangeTapped: () -> Void
 
     var body: some View {
@@ -20,25 +19,8 @@ struct ServerCard: View {
                             Text(server.country.uppercased())
                                 .vpnTextStyle(.caption, color: .vpnTextSecondary)
                             if let ms = latencyMs {
-                                Text("\(ms) ms")
-                                    .font(.system(size: 11, weight: .medium, design: .monospaced))
-                                    .foregroundStyle(latencyColor(ms: ms))
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(
-                                        Capsule()
-                                            .fill(latencyColor(ms: ms).opacity(0.12))
-                                    )
-                            } else if vpnActive {
-                                Text("N/A")
-                                    .font(.system(size: 11, weight: .medium, design: .monospaced))
-                                    .foregroundStyle(Color.vpnTextTertiary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(
-                                        Capsule()
-                                            .fill(Color.vpnTextTertiary.opacity(0.12))
-                                    )
+                                SignalBars(quality: LatencyQuality(ms: ms), size: .compact)
+                                    .frame(width: 22, height: 16)
                             }
                         }
                     }
@@ -68,14 +50,6 @@ struct ServerCard: View {
                         )
                 }
             }
-        }
-    }
-
-    private func latencyColor(ms: Int) -> Color {
-        switch LatencyQuality(ms: ms) {
-        case .excellent, .good: .vpnConnected
-        case .fair: .vpnConnecting
-        case .poor: .vpnDisconnected
         }
     }
 

@@ -28,11 +28,10 @@ struct ServerRow: View {
 
             Spacer()
 
-            // Latency
+            // Latency signal bars
             if let ms = latencyMs {
-                latencyBadge(ms: ms)
-            } else if vpnActive {
-                naBadge
+                SignalBars(quality: LatencyQuality(ms: ms), size: .compact)
+                    .frame(width: 22, height: 16)
             }
 
             // Favorite star
@@ -66,41 +65,6 @@ struct ServerRow: View {
         .opacity(server.isActive ? 1 : 0.5)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(server.name), \(server.country)\(isConnected ? ", connected" : "")\(isFavorite ? ", favorite" : "")\(server.isActive ? "" : ", unavailable")\(latencyMs.map { ", \($0) milliseconds" } ?? "")")
-    }
-
-    // MARK: - Latency Badge
-
-    private func latencyBadge(ms: Int) -> some View {
-        let quality = LatencyQuality(ms: ms)
-        return Text("\(ms) ms")
-            .font(.system(size: 11, weight: .medium, design: .monospaced))
-            .foregroundStyle(latencyColor(quality))
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(
-                Capsule()
-                    .fill(latencyColor(quality).opacity(0.12))
-            )
-    }
-
-    private var naBadge: some View {
-        Text("N/A")
-            .font(.system(size: 11, weight: .medium, design: .monospaced))
-            .foregroundStyle(Color.vpnTextTertiary)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(
-                Capsule()
-                    .fill(Color.vpnTextTertiary.opacity(0.12))
-            )
-    }
-
-    private func latencyColor(_ quality: LatencyQuality) -> Color {
-        switch quality {
-        case .excellent, .good: .vpnConnected
-        case .fair: .vpnConnecting
-        case .poor: .vpnDisconnected
-        }
     }
 
     // MARK: - Flag Helper
