@@ -58,6 +58,11 @@ targets:
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
         UIRequiresFullScreen: true
+    postCompileScripts:
+      - script: |
+          BUILD_NUMBER=$(git rev-list --count HEAD)
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"
+        name: Set Build Number from Git
     dependencies:
       - target: PacketTunnel
 
@@ -95,6 +100,11 @@ targets:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
+    postCompileScripts:
+      - script: |
+          BUILD_NUMBER=$(git rev-list --count HEAD)
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"
+        name: Set Build Number from Git
     dependencies:
       - package: WireGuardKit
         product: WireGuardKit
