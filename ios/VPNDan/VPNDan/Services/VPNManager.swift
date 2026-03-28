@@ -137,8 +137,11 @@ final class VPNManager {
 
         connectedServer = nil
         clearLastConnectedServer()
+        connectedDate = nil
+        stopStatsPolling()
         status = .disconnected
         isManualOperation = false
+        await fetchPublicIP()
     }
 
     // MARK: - Status Sync
@@ -220,9 +223,17 @@ final class VPNManager {
     }
 
     private func fetchPublicIP() async {
+        // Small delay to let the network path settle after connect/disconnect
+        try? await Task.sleep(for: .milliseconds(500))
+
         guard let url = URL(string: "https://api.ipify.org") else { return }
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            // Use an ephemeral session so URLSession doesn't reuse a cached
+            // connection from the previous network path (pre-VPN vs post-VPN),
+            // which would return the stale IP.
+            let session = URLSession(configuration: .ephemeral)
+            let (data, _) = try await session.data(from: url)
+            session.invalidateAndCancel()
             let ip = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
             self.publicIP = ip
         } catch {
