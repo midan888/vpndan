@@ -20,7 +20,21 @@ env:
   BACKEND_IMAGE: ghcr.io/${{ github.repository }}/backend
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+
+      - name: Run tests
+        working-directory: backend
+        run: go test ./... -v -count=1
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
