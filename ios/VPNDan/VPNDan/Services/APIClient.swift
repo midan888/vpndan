@@ -36,6 +36,10 @@ actor APIClient {
         return try await post("/auth/refresh", body: body)
     }
 
+    func deleteAccount() async throws -> DeleteAccountResponse {
+        return try await delete("/auth/account", authenticated: true)
+    }
+
     // MARK: - Server Endpoints
 
     func getServers() async throws -> [Server] {

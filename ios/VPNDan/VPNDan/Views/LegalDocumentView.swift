@@ -161,7 +161,7 @@ struct LegalDocumentView: View {
 extension LegalDocument {
     static let termsOfUse = LegalDocument(
         title: "Terms of Use",
-        lastUpdated: "March 24, 2026",
+        lastUpdated: "April 1, 2026",
         sections: [
             LegalSection(
                 title: "1. Acceptance of Terms",
@@ -184,8 +184,8 @@ extension LegalDocument {
             LegalSection(
                 title: "4. Account Registration",
                 paragraphs: [
-                    LegalParagraph("To use the Service, you must create an account with a valid email address and password. You are responsible for:", bullets: [
-                        LegalBullet("Maintaining the confidentiality of your account credentials"),
+                    LegalParagraph("To use the Service, you must create an account with a valid email address. Authentication is handled via one-time verification codes sent to your email. You are responsible for:", bullets: [
+                        LegalBullet("Maintaining access to the email address associated with your account"),
                         LegalBullet("All activities that occur under your account"),
                         LegalBullet("Notifying us immediately of any unauthorized use of your account"),
                     ])
@@ -244,7 +244,7 @@ extension LegalDocument {
             LegalSection(
                 title: "11. Termination",
                 paragraphs: [
-                    LegalParagraph("We reserve the right to suspend or terminate your account at any time if you violate these Terms. You may also terminate your account at any time by contacting us. Upon termination, your right to use the Service ceases immediately.")
+                    LegalParagraph("We reserve the right to suspend or terminate your account at any time if you violate these Terms. You may delete your account at any time from the Settings screen within the app. Upon deletion, all your data is permanently removed and your right to use the Service ceases immediately.")
                 ]
             ),
             LegalSection(
@@ -273,7 +273,7 @@ extension LegalDocument {
 
     static let privacyPolicy = LegalDocument(
         title: "Privacy Policy",
-        lastUpdated: "March 24, 2026",
+        lastUpdated: "April 1, 2026",
         sections: [
             LegalSection(
                 title: "1. Introduction",
@@ -347,7 +347,7 @@ extension LegalDocument {
             LegalSection(
                 title: "6. Data Retention",
                 paragraphs: [
-                    LegalParagraph("We retain your account information (email) for as long as your account is active. VPN connection data is never stored and therefore cannot be retained. When you delete your account, all associated data is permanently removed from our systems.")
+                    LegalParagraph("We retain your account information (email) for as long as your account is active. VPN connection data is never stored and therefore cannot be retained. You can delete your account at any time from the Settings screen in the app. When you delete your account, all associated data — including your email, VPN peer records, and any active connections — is permanently removed from our systems. A confirmation email is sent to notify you of the deletion.")
                 ]
             ),
             LegalSection(
@@ -355,7 +355,7 @@ extension LegalDocument {
                 paragraphs: [
                     LegalParagraph("You have the right to:", bullets: [
                         LegalBullet("your personal data", bold: "Access"),
-                        LegalBullet("your account and all associated data", bold: "Delete"),
+                        LegalBullet("your account and all associated data directly from the app's Settings screen", bold: "Delete"),
                         LegalBullet("your account information", bold: "Export"),
                         LegalBullet("of non-essential communications", bold: "Opt out"),
                     ])

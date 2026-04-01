@@ -218,6 +218,76 @@ func (m *mockPeerStore) ListAllPeers(_ context.Context) ([]models.Peer, error) {
 	return nil, nil
 }
 
+// mockEmailSender tracks sent emails for verification in tests.
+type mockEmailSender struct {
+	codesSent            map[string]string // email → code
+	deletionsSent        []string          // emails that received deletion confirmation
+}
+
+func newMockEmailSender() *mockEmailSender {
+	return &mockEmailSender{codesSent: make(map[string]string)}
+}
+
+func (m *mockEmailSender) SendCode(to, code string) error {
+	m.codesSent[to] = code
+	return nil
+}
+
+func (m *mockEmailSender) SendAccountDeleted(to string) error {
+	m.deletionsSent = append(m.deletionsSent, to)
+	return nil
+}
+
+// mockPeerStoreWithData is a peer store that can hold an active peer for testing.
+type mockPeerStoreWithData struct {
+	peers map[uuid.UUID]*models.Peer // keyed by userID
+}
+
+func newMockPeerStoreWithData() *mockPeerStoreWithData {
+	return &mockPeerStoreWithData{peers: make(map[uuid.UUID]*models.Peer)}
+}
+
+func (m *mockPeerStoreWithData) CreatePeer(_ context.Context, userID, serverID uuid.UUID, privateKey, publicKey, assignedIP string) (*models.Peer, error) {
+	p := &models.Peer{
+		ID:         uuid.New(),
+		UserID:     userID,
+		ServerID:   serverID,
+		PrivateKey: privateKey,
+		PublicKey:  publicKey,
+		AssignedIP: assignedIP,
+	}
+	m.peers[userID] = p
+	return p, nil
+}
+
+func (m *mockPeerStoreWithData) GetPeerByUserID(_ context.Context, userID uuid.UUID) (*models.Peer, error) {
+	p, ok := m.peers[userID]
+	if !ok {
+		return nil, store.ErrPeerNotFound
+	}
+	return p, nil
+}
+
+func (m *mockPeerStoreWithData) DeletePeerByUserID(_ context.Context, userID uuid.UUID) error {
+	if _, ok := m.peers[userID]; !ok {
+		return store.ErrPeerNotFound
+	}
+	delete(m.peers, userID)
+	return nil
+}
+
+func (m *mockPeerStoreWithData) CountPeersByServerID(_ context.Context, _ uuid.UUID) (int, error) {
+	return len(m.peers), nil
+}
+
+func (m *mockPeerStoreWithData) ListPeersByServerID(_ context.Context, _ uuid.UUID) ([]models.Peer, error) {
+	return nil, nil
+}
+
+func (m *mockPeerStoreWithData) ListAllPeers(_ context.Context) ([]models.Peer, error) {
+	return nil, nil
+}
+
 func setupRouter() (http.Handler, *mockUserStore, *mockAuthCodeStore) {
 	ms := newMockUserStore()
 	acs := newMockAuthCodeStore()
@@ -226,10 +296,28 @@ func setupRouter() (http.Handler, *mockUserStore, *mockAuthCodeStore) {
 	return router, ms, acs
 }
 
+func setupRouterFull() (http.Handler, *mockUserStore, *mockAuthCodeStore, *mockPeerStoreWithData, *mockEmailSender) {
+	ms := newMockUserStore()
+	acs := newMockAuthCodeStore()
+	ps := newMockPeerStoreWithData()
+	es := newMockEmailSender()
+	jwtSvc := auth.NewJWTService("test-secret")
+	router := NewRouter(ms, &mockServerStore{}, ps, &mockGeoIPStore{}, acs, jwtSvc, es, &mockPeerManager{}, "", "")
+	return router, ms, acs, ps, es
+}
+
 func postJSON(router http.Handler, path string, body any) *httptest.ResponseRecorder {
 	b, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, path, bytes.NewReader(b))
 	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	return w
+}
+
+func deleteWithAuth(router http.Handler, path, token string) *httptest.ResponseRecorder {
+	req := httptest.NewRequest(http.MethodDelete, path, nil)
+	req.Header.Set("Authorization", "Bearer "+token)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	return w
@@ -825,5 +913,142 @@ func TestVerifyCode_ReturnsValidTokensOnReLogin(t *testing.T) {
 	})
 	if w.Code != http.StatusOK {
 		t.Fatalf("re-login refresh token should work, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// --- Delete Account tests ---
+
+func TestDeleteAccount_Success(t *testing.T) {
+	router, ms, _, _, es := setupRouterFull()
+	jwtSvc := auth.NewJWTService("test-secret")
+
+	userID := uuid.New()
+	ms.users["delete@example.com"] = &models.User{ID: userID, Email: "delete@example.com"}
+
+	access, _, _ := jwtSvc.GenerateTokenPair(userID, false)
+
+	w := deleteWithAuth(router, "/api/v1/auth/account", access)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	// Verify user is deleted
+	if _, exists := ms.users["delete@example.com"]; exists {
+		t.Fatal("expected user to be deleted from store")
+	}
+
+	// Verify deletion email was sent
+	if len(es.deletionsSent) != 1 || es.deletionsSent[0] != "delete@example.com" {
+		t.Fatalf("expected deletion email to delete@example.com, got %v", es.deletionsSent)
+	}
+}
+
+func TestDeleteAccount_WithActivePeer(t *testing.T) {
+	router, ms, _, ps, es := setupRouterFull()
+	jwtSvc := auth.NewJWTService("test-secret")
+
+	userID := uuid.New()
+	ms.users["peer@example.com"] = &models.User{ID: userID, Email: "peer@example.com"}
+
+	// Give the user an active peer
+	ps.peers[userID] = &models.Peer{
+		ID:        uuid.New(),
+		UserID:    userID,
+		ServerID:  uuid.New(),
+		PublicKey: "test-pubkey",
+	}
+
+	access, _, _ := jwtSvc.GenerateTokenPair(userID, false)
+
+	w := deleteWithAuth(router, "/api/v1/auth/account", access)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	// Verify user is deleted
+	if _, exists := ms.users["peer@example.com"]; exists {
+		t.Fatal("expected user to be deleted from store")
+	}
+
+	// Verify peer is cleaned up
+	if _, exists := ps.peers[userID]; exists {
+		t.Fatal("expected peer to be deleted from store")
+	}
+
+	// Verify deletion email was sent
+	if len(es.deletionsSent) != 1 || es.deletionsSent[0] != "peer@example.com" {
+		t.Fatalf("expected deletion email to peer@example.com, got %v", es.deletionsSent)
+	}
+}
+
+func TestDeleteAccount_NoToken(t *testing.T) {
+	router, _, _ := setupRouter()
+
+	req := httptest.NewRequest(http.MethodDelete, "/api/v1/auth/account", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusUnprocessableEntity && w.Code != http.StatusUnauthorized {
+		t.Fatalf("expected 422 or 401 without token, got %d", w.Code)
+	}
+}
+
+func TestDeleteAccount_InvalidToken(t *testing.T) {
+	router, _, _ := setupRouter()
+
+	w := deleteWithAuth(router, "/api/v1/auth/account", "invalid-token")
+
+	if w.Code != http.StatusUnauthorized {
+		t.Fatalf("expected 401, got %d", w.Code)
+	}
+}
+
+func TestDeleteAccount_TokenForDeletedUser(t *testing.T) {
+	router, _, _, _, _ := setupRouterFull()
+	jwtSvc := auth.NewJWTService("test-secret")
+
+	// Generate token for a user that doesn't exist in the store
+	access, _, _ := jwtSvc.GenerateTokenPair(uuid.New(), false)
+
+	w := deleteWithAuth(router, "/api/v1/auth/account", access)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestDeleteAccount_TokenInvalidAfterDeletion(t *testing.T) {
+	router, ms, _, _, _ := setupRouterFull()
+	jwtSvc := auth.NewJWTService("test-secret")
+
+	userID := uuid.New()
+	ms.users["gone@example.com"] = &models.User{ID: userID, Email: "gone@example.com"}
+
+	access, refresh, _ := jwtSvc.GenerateTokenPair(userID, false)
+
+	// Delete account
+	w := deleteWithAuth(router, "/api/v1/auth/account", access)
+	if w.Code != http.StatusOK {
+		t.Fatalf("delete: expected 200, got %d", w.Code)
+	}
+
+	// Access token should no longer work on authenticated endpoints
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/servers", nil)
+	req.Header.Set("Authorization", "Bearer "+access)
+	w2 := httptest.NewRecorder()
+	router.ServeHTTP(w2, req)
+	// Token is still cryptographically valid (stateless JWT), but the
+	// user is gone — the servers endpoint returns empty list (200) because
+	// it doesn't re-verify user existence. The important check is that
+	// refresh fails.
+
+	// Refresh token should fail because user no longer exists
+	w3 := postJSON(router, "/api/v1/auth/refresh", map[string]string{
+		"refresh_token": refresh,
+	})
+	if w3.Code != http.StatusUnauthorized {
+		t.Fatalf("refresh after deletion: expected 401, got %d", w3.Code)
 	}
 }

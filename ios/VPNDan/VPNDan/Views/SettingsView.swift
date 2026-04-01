@@ -6,6 +6,7 @@ struct SettingsView: View {
     @Environment(ThemeService.self) private var themeService
     @Environment(SplitTunnelService.self) private var splitTunnel
     @State private var showLogoutConfirmation = false
+    @State private var showDeleteAccountConfirmation = false
     @State private var showThemePicker = false
     @State private var showSplitTunnel = false
     @State private var showHelpCenter = false
@@ -33,6 +34,9 @@ struct SettingsView: View {
                     // Sign Out
                     signOutButton
 
+                    // Delete Account
+                    deleteAccountButton
+
                     // Version
                     Text(L10n.Settings.appVersion(appVersion))
                         .vpnTextStyle(.caption, color: .vpnTextTertiary)
@@ -58,6 +62,22 @@ struct SettingsView: View {
                 Text(L10n.Settings.signOutConfirmConnected)
             } else {
                 Text(L10n.Settings.signOutConfirm)
+            }
+        }
+        .confirmationDialog(L10n.Settings.deleteAccount, isPresented: $showDeleteAccountConfirmation) {
+            Button(L10n.Settings.deleteAccountButton, role: .destructive) {
+                Task {
+                    if vpn.status == .connected {
+                        try? await vpn.disconnect()
+                    }
+                    await auth.deleteAccount()
+                }
+            }
+        } message: {
+            if vpn.status == .connected {
+                Text(L10n.Settings.deleteAccountConfirmConnected)
+            } else {
+                Text(L10n.Settings.deleteAccountConfirm)
             }
         }
     }
@@ -206,6 +226,32 @@ struct SettingsView: View {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
                     .font(.system(size: 14))
                 Text(L10n.Settings.signOut)
+                    .vpnTextStyle(.buttonText)
+            }
+            .foregroundStyle(Color.vpnDisconnected)
+            .frame(maxWidth: .infinity)
+            .frame(height: 52)
+            .background(
+                RoundedRectangle(cornerRadius: VPNRadius.button)
+                    .fill(Color.vpnDisconnected.opacity(0.1))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: VPNRadius.button)
+                    .stroke(Color.vpnDisconnected.opacity(0.3), lineWidth: 1)
+            )
+        }
+    }
+
+    // MARK: - Delete Account Button
+
+    private var deleteAccountButton: some View {
+        Button {
+            showDeleteAccountConfirmation = true
+        } label: {
+            HStack {
+                Image(systemName: "trash.fill")
+                    .font(.system(size: 14))
+                Text(L10n.Settings.deleteAccount)
                     .vpnTextStyle(.buttonText)
             }
             .foregroundStyle(Color.vpnDisconnected)

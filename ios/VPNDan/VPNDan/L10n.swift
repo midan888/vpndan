@@ -154,6 +154,12 @@ enum L10n {
         static let signOutConfirmConnected = String(localized: "settings.signOutConfirmConnected", defaultValue: "You are currently connected. Signing out will disconnect you.")
         static let signOutConfirm = String(localized: "settings.signOutConfirm", defaultValue: "Are you sure you want to sign out?")
 
+        // Delete Account
+        static let deleteAccount = String(localized: "settings.deleteAccount", defaultValue: "Delete Account")
+        static let deleteAccountConfirm = String(localized: "settings.deleteAccountConfirm", defaultValue: "This will permanently delete your account and all associated data. This action cannot be undone.")
+        static let deleteAccountConfirmConnected = String(localized: "settings.deleteAccountConfirmConnected", defaultValue: "You are currently connected. Deleting your account will disconnect you and permanently remove all your data.")
+        static let deleteAccountButton = String(localized: "settings.deleteAccountButton", defaultValue: "Delete Permanently")
+
         static func appVersion(_ version: String) -> String {
             "VPN Dan v\(version)"
         }
@@ -236,7 +242,7 @@ enum L10n {
         static let helpMultiDeviceQ = String(localized: "helpCenter.helpMultiDeviceQ", defaultValue: "Can I use my account on multiple devices?")
         static let helpMultiDeviceA = String(localized: "helpCenter.helpMultiDeviceA", defaultValue: "Currently, VPN Dan supports one active connection per account. Connecting from a new device will disconnect the previous one.")
         static let helpDeleteQ = String(localized: "helpCenter.helpDeleteQ", defaultValue: "How do I delete my account?")
-        static let helpDeleteA = String(localized: "helpCenter.helpDeleteA", defaultValue: "To delete your account and all associated data, please contact us at support@vpndan.com. We will process your request and confirm once complete.")
+        static let helpDeleteA = String(localized: "helpCenter.helpDeleteA", defaultValue: "Go to Settings and tap \"Delete Account\" at the bottom of the page. This will permanently remove your account and all associated data.")
     }
 
     // MARK: - Split Tunnel

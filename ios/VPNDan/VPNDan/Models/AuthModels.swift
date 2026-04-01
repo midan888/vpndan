@@ -21,6 +21,10 @@ struct RefreshRequest: Encodable {
     }
 }
 
+struct DeleteAccountResponse: Decodable {
+    let message: String
+}
+
 struct AuthResponse: Decodable {
     let accessToken: String
     let refreshToken: String

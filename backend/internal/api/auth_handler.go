@@ -14,17 +14,21 @@ import (
 	"vpn-dan/backend/internal/email"
 	"vpn-dan/backend/internal/models"
 	"vpn-dan/backend/internal/store"
+	"vpn-dan/backend/internal/wireguard"
 )
 
 type AuthHandler struct {
 	users     store.UserStore
+	peers     store.PeerStore
+	servers   store.ServerStore
 	authCodes store.AuthCodeStore
 	jwt       *auth.JWTService
 	email     email.Sender
+	wg        wireguard.PeerManager
 }
 
-func NewAuthHandler(users store.UserStore, authCodes store.AuthCodeStore, jwt *auth.JWTService, emailSender email.Sender) *AuthHandler {
-	return &AuthHandler{users: users, authCodes: authCodes, jwt: jwt, email: emailSender}
+func NewAuthHandler(users store.UserStore, peers store.PeerStore, servers store.ServerStore, authCodes store.AuthCodeStore, jwt *auth.JWTService, emailSender email.Sender, wg wireguard.PeerManager) *AuthHandler {
+	return &AuthHandler{users: users, peers: peers, servers: servers, authCodes: authCodes, jwt: jwt, email: emailSender, wg: wg}
 }
 
 // Input/Output types for huma
@@ -146,4 +150,62 @@ func (h *AuthHandler) Refresh(ctx context.Context, input *RefreshInput) (*Refres
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}}, nil
+}
+
+// DELETE /api/v1/auth/account
+
+type DeleteAccountInput struct {
+	Authorization string `header:"Authorization" required:"true" doc:"Bearer access token"`
+}
+
+type DeleteAccountOutput struct {
+	Body struct {
+		Message string `json:"message" doc:"Account deletion confirmation"`
+	}
+}
+
+func (h *AuthHandler) DeleteAccount(ctx context.Context, input *DeleteAccountInput) (*DeleteAccountOutput, error) {
+	userID, err := authenticateRequest(h.jwt, input.Authorization)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get user email before deletion (for confirmation email)
+	user, err := h.users.GetUserByID(ctx, userID)
+	if err != nil {
+		if errors.Is(err, store.ErrUserNotFound) {
+			return nil, huma.Error404NotFound("user not found")
+		}
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+
+	// Remove WireGuard peer if active
+	peer, err := h.peers.GetPeerByUserID(ctx, userID)
+	if err != nil && !errors.Is(err, store.ErrPeerNotFound) {
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+	if peer != nil {
+		wgManager := h.wg
+		if srv, e := h.servers.GetServerByID(ctx, peer.ServerID); e == nil && srv.WGAdminURL != "" {
+			wgManager = wireguard.NewHTTPPeerManager(srv.WGAdminURL)
+		}
+		_ = wgManager.RemovePeer(peer.PublicKey)
+		_ = h.peers.DeletePeerByUserID(ctx, userID)
+	}
+
+	// Delete user from database
+	if err := h.users.DeleteUser(ctx, userID); err != nil {
+		return nil, huma.Error500InternalServerError("internal server error")
+	}
+
+	// Send account deletion confirmation email
+	if h.email != nil {
+		if err := h.email.SendAccountDeleted(user.Email); err != nil {
+			log.Printf("failed to send account deletion email to %s: %v", user.Email, err)
+		}
+	}
+
+	out := &DeleteAccountOutput{}
+	out.Body.Message = "account deleted"
+	return out, nil
 }

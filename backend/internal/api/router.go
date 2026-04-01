@@ -17,7 +17,7 @@ func NewRouter(users store.UserStore, servers store.ServerStore, peers store.Pee
 
 	humaAPI := humago.New(mux, huma.DefaultConfig("VPN Dan API", "1.0.0"))
 
-	authHandler := NewAuthHandler(users, authCodes, jwtService, emailSender)
+	authHandler := NewAuthHandler(users, peers, servers, authCodes, jwtService, emailSender, wg)
 
 	huma.Register(humaAPI, huma.Operation{
 		Method:      http.MethodPost,
@@ -42,6 +42,15 @@ func NewRouter(users store.UserStore, servers store.ServerStore, peers store.Pee
 		Summary:     "Refresh access token",
 		Tags:        []string{"Auth"},
 	}, authHandler.Refresh)
+
+	huma.Register(humaAPI, huma.Operation{
+		Method:      http.MethodDelete,
+		Path:        "/api/v1/auth/account",
+		OperationID: "delete-account",
+		Summary:     "Permanently delete user account and all data",
+		Tags:        []string{"Auth"},
+		Security:    []map[string][]string{{"bearer": {}}},
+	}, authHandler.DeleteAccount)
 
 	serverHandler := NewServerHandler(servers, jwtService)
 

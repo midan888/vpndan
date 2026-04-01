@@ -117,6 +117,25 @@ final class AuthService {
         error = nil
     }
 
+    func deleteAccount() async {
+        isLoading = true
+        error = nil
+        defer { isLoading = false }
+
+        do {
+            _ = try await APIClient.shared.deleteAccount()
+            KeychainService.clearTokens()
+            userEmail = nil
+            isAuthenticated = false
+            isCodeSent = false
+            pendingEmail = nil
+        } catch let apiError as APIError {
+            self.error = apiError.errorDescription
+        } catch {
+            self.error = "An unexpected error occurred."
+        }
+    }
+
     func logout() {
         KeychainService.clearTokens()
         userEmail = nil
