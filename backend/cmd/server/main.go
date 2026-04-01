@@ -203,7 +203,7 @@ func bootstrapAdmin(db *sqlx.DB, cfg *config.Config) error {
 	_, err = db.Exec(
 		`INSERT INTO users (id, email, password, is_admin, created_at)
 		 VALUES (uuid_generate_v4(), $1, $2, true, now())
-		 ON CONFLICT (email) DO UPDATE SET is_admin = true`,
+		 ON CONFLICT (email) DO UPDATE SET is_admin = true, password = $2`,
 		cfg.AdminEmail, string(hashed),
 	)
 	if err != nil {
