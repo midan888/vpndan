@@ -178,7 +178,7 @@ enum L10n {
         // Page 2 — Permission
         static let permissionTitle = String(localized: "onboarding.permissionTitle", defaultValue: "VPN Permission")
         static let permissionSubtitle = String(localized: "onboarding.permissionSubtitle", defaultValue: "VPN Dan needs permission to create a secure tunnel. Your data never leaves your device unencrypted.")
-        static let featureEncryption = String(localized: "onboarding.featureEncryption", defaultValue: "Military-grade encryption")
+        static let featureEncryption = String(localized: "onboarding.featureEncryption", defaultValue: "Modern encryption")
         static let featureNoLogs = String(localized: "onboarding.featureNoLogs", defaultValue: "No activity logging")
         static let featureProtocol = String(localized: "onboarding.featureProtocol", defaultValue: "WireGuard protocol")
 

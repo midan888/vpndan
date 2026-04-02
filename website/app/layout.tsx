@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s — VPN Dan",
   },
   description:
-    "WireGuard-powered VPN for iOS. Military-grade encryption, lightning-fast speeds, global servers. One tap to go invisible.",
+    "WireGuard-powered VPN for iOS. Modern encryption, lightning-fast speeds, global servers. One tap to go invisible.",
   openGraph: {
     siteName: "VPN Dan",
     type: "website",

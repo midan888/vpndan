@@ -22,7 +22,7 @@ export default function Home() {
               <span className="gradient-text">Total privacy.</span>
             </h1>
             <p className="hero__subtitle">
-              WireGuard-powered VPN for iOS. Military-grade encryption, blazing
+              WireGuard-powered VPN for iOS. Modern encryption, blazing
               speeds, and servers worldwide. Go invisible in one tap.
             </p>
             <div className="hero__actions">
@@ -55,7 +55,7 @@ export default function Home() {
               <div className="feature-card__icon">
                 <ShieldFeatureIcon />
               </div>
-              <h3 className="feature-card__title">Military-Grade Encryption</h3>
+              <h3 className="feature-card__title">Modern Encryption</h3>
               <p className="feature-card__text">
                 Built on WireGuard — the most modern, audited VPN protocol. Your
                 data is locked down with state-of-the-art cryptography.
