@@ -56,6 +56,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIRequiresFullScreen: true
+        ITSAppUsesNonExemptEncryption: false
     preBuildScripts:
       - script: |
           BUILD_NUMBER=$(git rev-list --count HEAD)
@@ -95,6 +96,7 @@ targets:
         CFBundleDisplayName: PacketTunnel
         CFBundleShortVersionString: "1.0.0"
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
         NSExtension:
           NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider

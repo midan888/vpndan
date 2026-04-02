@@ -5,7 +5,7 @@ Description: VPN Dan protects your internet connection with one tap. Built on th
   Connect in one tap. No settings to configure, no protocols to choose. Just tap the power button and you're protected. WireGuard ensures your connection is faster than legacy VPN protocols.
 
   REAL PRIVACY
-  Your browsing activity is never logged. VPN Dan uses military-grade encryption (ChaCha20 + Curve25519) to keep your data private from ISPs, hackers, and anyone watching your network.
+  Your browsing activity is never logged. VPN Dan uses modern encryption built into the WireGuard protocol to keep your data private from ISPs, hackers, and anyone watching your network.
 
   GLOBAL SERVER NETWORK
   Browse servers across Americas, Europe, Asia, and Oceania. See real-time latency for every server so you always pick the fastest option. Save your favorites for quick access.
